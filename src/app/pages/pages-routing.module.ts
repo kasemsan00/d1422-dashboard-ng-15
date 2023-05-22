@@ -4,8 +4,8 @@ import { NgModule } from '@angular/core';
 import { PagesComponent } from './pages.component';
 import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
 // import { DashboardComponent } from './charts/dashboard/dashboard.component';
-import { TestComponent } from '../test/test.component';
-import { AppComponent } from '../app.component';
+import { TestComponent } from './test/test.component';
+import { DashboardComponent } from './charts/dashboard/dashboard.component';
 
 const routes: Routes = [
   {
@@ -16,10 +16,10 @@ const routes: Routes = [
         path: 'test',
         component: TestComponent,
       },
-      // {
-      //   path: 'dashboard',
-      //   component: DashboardComponent,
-      // },
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+      },
       // {
       //   path: 'dashboard/:branch_id',
       //   component: DashboardComponent,

@@ -6,7 +6,7 @@ import { NbAlertModule } from '@nebular/theme';
 
 const routes: Routes = [
   {
-    path: '/test',
+    path: 'test',
     component: TestComponent,
   },
 ];

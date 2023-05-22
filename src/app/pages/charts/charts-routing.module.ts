@@ -7,11 +7,6 @@ const routes: Routes = [
   {
     path: '',
     component: ChartsComponent,
-    children: [
-      {
-        path: 'chartjs',
-      },
-    ],
   },
 ];
 
