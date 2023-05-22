@@ -17,20 +17,18 @@ import {
   NbCardModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
-import { TestModule } from './pages/test/test.module';
+import { DashboardModule } from './pages/dashboard/dashboard.module';
 import { ChartsModule } from './pages/charts/charts.module';
-import { DashboardModule } from './pages/charts/dashboard/dashboard.module';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    TestModule,
+    DashboardModule,
     ChartsModule,
     FormsModule,
     HttpClientModule,
-    DashboardModule,
     BrowserAnimationsModule,
     NbAlertModule,
     NbThemeModule.forRoot({ name: 'default' }),

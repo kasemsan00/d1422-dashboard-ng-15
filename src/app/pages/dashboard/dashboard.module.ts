@@ -7,8 +7,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
-import { TestRoutingModule } from './test-routing.module';
-import { TestComponent } from './test.component';
+import { DashboardRoutingModule } from './dashboard-routing.module';
+import { DashboardComponent } from './dashboard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   NbThemeModule,
@@ -19,10 +19,10 @@ import {
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 
 @NgModule({
-  declarations: [TestComponent],
+  declarations: [DashboardComponent],
   imports: [
     BrowserModule,
-    TestRoutingModule,
+    DashboardRoutingModule,
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
@@ -34,6 +34,6 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [],
-  bootstrap: [TestComponent],
+  bootstrap: [DashboardComponent],
 })
-export class TestModule {}
+export class DashboardModule {}

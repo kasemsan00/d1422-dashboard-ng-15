@@ -2,29 +2,29 @@ import { Component, HostListener } from '@angular/core';
 import {
   NbIconLibraries,
   NbComponentStatus,
+  NbGlobalLogicalPosition,
   NbGlobalPhysicalPosition,
   NbGlobalPosition,
   NbToastrService,
   NbToastrConfig,
 } from '@nebular/theme';
-import { timer } from 'rxjs';
-import { D1669Service } from '../../../services/d1669.service';
-import { environment } from '../../../../environments/environment';
+import { timer, defer } from 'rxjs';
+import { D1669Service } from '../../services/d1669.service';
 import * as screenfull from 'screenfull';
+import { environment } from '../../../environments/environment';
 import { NbDialogService, NbToastRef } from '@nebular/theme';
 import { Router, ActivatedRoute } from '@angular/router';
 import { interval, forkJoin, Subscription } from 'rxjs';
-import { GlobalService } from '../../../services/global.service';
+import { GlobalService } from '../../services/global.service';
 
 @Component({
-  selector: 'd1442-dashboard',
-  styleUrls: ['./dashboard.component.scss'],
-  templateUrl: './dashboard.component.html',
+  selector: 'app-dashboard',
+  templateUrl: 'dashboard.component.html',
 })
 export class DashboardComponent {
-  is_fullscreen = false;
+  is_fullscreen: any = false;
 
-  tmp_summary_id: Array<never> = [];
+  tmp_summary_id: any = [];
 
   noti_specail_line: any;
 
@@ -162,26 +162,32 @@ export class DashboardComponent {
   toastr_title = 'Notification!';
   toastr_content = `Update setting successfully!`;
 
-  config: NbToastrConfig | boolean = false;
+  config: NbToastrConfig;
 
   chart_interval = interval(1000 * 60);
   statisticSubscription: any;
 
-  data_chart: any | string;
+  data_chart: any;
 
-  evaIcons: string[] = [];
+  evaIcons = [];
+  play: any = false;
   interval: any;
-  time = 0;
+  time: any = 0;
+  time_hour = 0;
+  time_minute = 0;
+  time_sec = 0;
 
-  subscriptions_sync: Subscription = Subscription.EMPTY;
-  subscriptions_sse: Subscription = Subscription.EMPTY;
-  subscriptions_forkjoin: Subscription = Subscription.EMPTY;
+  subscriptions_sync: Subscription;
+  subscriptions_sse: Subscription;
+  subscriptions_forkjoin: Subscription;
 
-  special_line_ttrs: NbToastRef = this.toastrService.show({});
-  special_line_191: NbToastRef = this.toastrService.show({});
-  special_line_cellular: NbToastRef = this.toastrService.show({});
-  special_line_data: NbToastRef = this.toastrService.show({});
-  special_line_operator: NbToastRef = this.toastrService.show({});
+  end_case_status: any = ['HANGUP', 'ABANDON'];
+
+  special_line_ttrs: NbToastRef;
+  special_line_191: NbToastRef;
+  special_line_cellular: NbToastRef;
+  special_line_data: NbToastRef;
+  special_line_operator: NbToastRef;
 
   public now: Date = new Date();
 
@@ -192,6 +198,7 @@ export class DashboardComponent {
   constructor(
     iconsLibrary: NbIconLibraries,
     private _d1669Service: D1669Service,
+    private auth: AuthService,
     private dialogService: NbDialogService,
     private toastrService: NbToastrService,
     private router: Router,
@@ -230,8 +237,8 @@ export class DashboardComponent {
   }
 
   checkMode() {
-    this.route.params.subscribe((params: any) => {
-      const branch_id = params.branch_id;
+    this.route.params.subscribe((params) => {
+      let branch_id = params.branch_id;
       if (branch_id) {
         this.url_mode = 'fixed';
         this.branch_id = branch_id;
@@ -243,7 +250,7 @@ export class DashboardComponent {
     });
   }
 
-  getBranchName(branch_id: string) {
+  getBranchName(branch_id) {
     console.log('branch_id', branch_id);
     this.globalService.branch_name = '';
     this._d1669Service
@@ -251,9 +258,9 @@ export class DashboardComponent {
         environment.environment.url_backend +
           '/mapper-agent/v1/branchs?limit=100'
       )
-      .subscribe((data: any) => {
+      .subscribe((data) => {
         if (data['status'] == 'OK') {
-          data['data']['data'].map((item: any) => {
+          data['data']['data'].map((item) => {
             if (item.branch_id == branch_id) {
               console.log('branch_name1', item.branch_name);
               this.globalService.branch_name = item.branch_name;
@@ -267,14 +274,12 @@ export class DashboardComponent {
   }
 
   initSetting() {
-    const chart_format: string | undefined = localStorage
-      .getItem('chart_format')
-      ?.toString();
-    const abandon_lists_sorting_format: string | undefined = localStorage
-      .getItem('abandon_lists_sorting_format')
-      ?.toString();
-    const display_name = localStorage.getItem('display_name');
-    const agent_mode = localStorage.getItem('agent_mode');
+    let chart_format = localStorage.getItem('chart_format');
+    let abandon_lists_sorting_format = localStorage.getItem(
+      'abandon_lists_sorting_format'
+    );
+    let display_name = localStorage.getItem('display_name');
+    let agent_mode = localStorage.getItem('agent_mode');
     if (chart_format) {
       this.setting.chart_format = chart_format;
       localStorage.setItem('chart_format', chart_format);
@@ -340,7 +345,7 @@ export class DashboardComponent {
           '/services/dashboard?network_policy=' +
           environment.environment.network_policy
       )
-      .subscribe((data: any) => {
+      .subscribe((data) => {
         if (data['status'] == 'OK') {
           this.url_mapper = data['data'].api_url;
           let url_api_sse = '';
@@ -389,7 +394,7 @@ export class DashboardComponent {
     }
     this._d1669Service
       .getSIPStatus(url_api_status + '/' + this.setting.chart_format)
-      .subscribe((data: any) => {
+      .subscribe((data) => {
         if (data['status'] == 'OK') {
           this.globalService.sip_status = data['data']['status'];
         } else {
@@ -399,36 +404,45 @@ export class DashboardComponent {
   }
 
   fetchAgents() {
+    let url_api_agent_status = '';
+    let url_api_agent = '';
+    if (this.url_mode == 'mapper') {
+      url_api_agent_status = this.url_mapper.api_agent_status;
+      url_api_agent = this.url_mapper.api_agent;
+    } else {
+      url_api_agent_status =
+        environment.environment.url_backend +
+        '/sse/v1/' +
+        this.branch_id +
+        '/agent';
+      url_api_agent =
+        environment.environment.url_backend +
+        '/user-manage/v1/' +
+        this.branch_id +
+        '/users';
+    }
     this.subscriptions_forkjoin = forkJoin({
-      // agent_status: this._d1669Service.getAgentStatus(url_api_agent_status),
-      // agent_lists: this._d1669Service.getAgentLists(url_api_agent),
-    }).subscribe(
-      ({
-        agent_status,
-        agent_lists,
-      }: {
-        agent_status: any;
-        agent_lists: any;
-      }) => {
-        if (agent_lists['data'] && this.agent_lists['data'].length > 0) {
-          this.agent_lists = agent_lists['data'];
-        }
-        if (agent_status['data'] && agent_status['data'].length > 0) {
-          this.agents = agent_status['data'];
-          this.mapDisplayNameAgents();
-          this.filterAgentByType();
-        }
-        this.countAgentSystem();
+      agent_status: this._d1669Service.getAgentStatus(url_api_agent_status),
+      agent_lists: this._d1669Service.getAgentLists(url_api_agent),
+    }).subscribe(({ agent_status, agent_lists }) => {
+      if (agent_lists['data'] && agent_lists['data'].length > 0) {
+        this.agent_lists = agent_lists['data'];
       }
-    );
+      if (agent_status['data'] && agent_status['data'].length > 0) {
+        this.agents = agent_status['data'];
+        this.mapDisplayNameAgents();
+        this.filterAgentByType();
+      }
+      this.countAgentSystem();
+    });
   }
 
   countAgentSystem() {
     const agent_normal_system = this.agents.filter(
-      (x: any) => x.agent_type_id <= 5
+      (x) => x.agent_type_id <= 5
     ).length;
     const agent_backup_system = this.agents.filter(
-      (x: any) => x.agent_type_id == 8
+      (x) => x.agent_type_id == 8
     ).length;
     const data = {
       agent_mode: localStorage.getItem('agent_mode') || 'normal',
@@ -440,14 +454,14 @@ export class DashboardComponent {
   }
 
   mapDisplayNameAgents() {
-    this.agents.map((item: any) => {
+    this.agents.map((item) => {
       if (item.source == item.destination) {
         // fix for show as Busy
         item.action_at = 0;
       }
 
       if (this.agent_lists.length > 0) {
-        this.agent_lists.map((item_list: any) => {
+        this.agent_lists.map((item_list) => {
           // map display name
           if (
             item.agent_username == item_list.username &&
@@ -467,19 +481,19 @@ export class DashboardComponent {
     }
     this.subscriptions_sse = this.globalService
       .getDataBust()
-      .subscribe((data: any) => {
-        const dataAgents = data;
+      .subscribe((data) => {
+        let dataAgents = data;
 
         // check initial, is a first connection
         if (dataAgents.title == 'initial') {
           if (environment.environment.env_mode != 'production')
             console.log('SSE:', dataAgents.status);
 
-          if (dataAgents.body === null) {
+          if (dataAgents.body == null) {
             this.agents = [];
           } else {
             this.agents = dataAgents.body;
-            this.agents = this.agents.map((item: any) => {
+            this.agents = this.agents.map((item) => {
               if (item.source == item.destination) {
                 // fix for show as Busy
                 item.action_at = 0;
@@ -501,11 +515,11 @@ export class DashboardComponent {
             console.log(dataAgents.body);
           }
 
-          if (dataAgents.body === null) {
+          if (dataAgents.body == null) {
             this.agents = [];
           } else {
             this.agents = dataAgents.body;
-            this.agents = this.agents.map((item: any) => {
+            this.agents = this.agents.map((item) => {
               if (item.source == item.destination) {
                 // fix for show as Busy
                 item.action_at = 0;
@@ -702,7 +716,7 @@ export class DashboardComponent {
           dataAgents.body.action == 'ABANDON' ||
           dataAgents.body.action == 'NO_ANSWER'
         ) {
-          this.agents.map((item: any) => {
+          this.agents.map((item) => {
             if (item.agent_extension == dataAgents.body.agent_extension)
               item.action = dataAgents.body.action;
             return item;
@@ -731,7 +745,7 @@ export class DashboardComponent {
               // dataAgents.body.source = dataAgents.body.a_number
               // switch source <=> destination when outbound
               if (dataAgents.body.bound_type == 'outbound') {
-                const tmp = dataAgents.body.source;
+                let tmp = dataAgents.body.source;
                 dataAgents.body.source = dataAgents.body.a_number;
                 dataAgents.body.destination = tmp;
               }
@@ -739,7 +753,7 @@ export class DashboardComponent {
               this.agents[i] = dataAgents.body;
               if (dataAgents.body.action == 'TRANSFER_JOIN_CALLING') {
                 // Continuous timing
-                const tmp_action_at = this.agents[i].action_at;
+                let tmp_action_at = this.agents[i].action_at;
                 this.agents[i] = dataAgents.body;
                 this.agents[i].action_at = tmp_action_at;
                 break;
@@ -809,8 +823,8 @@ export class DashboardComponent {
                   ') is transfered'
               );
               // Continuous timing & keep source
-              const tmp_action_at = this.agents[i].action_at;
-              const tmp_source_type = this.agents[i].source_type;
+              let tmp_action_at = this.agents[i].action_at;
+              let tmp_source_type = this.agents[i].source_type;
               this.agents[i] = dataAgents.body;
               this.agents[i].action_at = tmp_action_at;
               this.agents[i].source_type = tmp_source_type;
@@ -828,8 +842,8 @@ export class DashboardComponent {
                   ') is lost transfered'
               );
               // Continuous timing & keep source
-              const tmp_action_at = this.agents[i].action_at;
-              const tmp_source_type = this.agents[i].source_type;
+              let tmp_action_at = this.agents[i].action_at;
+              let tmp_source_type = this.agents[i].source_type;
               this.agents[i] = dataAgents.body;
               this.agents[i].action_at = tmp_action_at;
               this.agents[i].source_type = tmp_source_type;
@@ -851,7 +865,7 @@ export class DashboardComponent {
                     ') joined conference'
                 );
               // Continuous timing
-              const tmp_action_at = this.agents[i].action_at;
+              let tmp_action_at = this.agents[i].action_at;
               this.agents[i] = dataAgents.body;
               this.agents[i].action_at = tmp_action_at;
               this.agents[i].source = this.agents[i].a_number;
@@ -883,6 +897,8 @@ export class DashboardComponent {
         this.filterAgentByType();
       });
   }
+
+  manageEventOfAgent() {}
 
   checkDurationSync() {
     this.globalService.duration_sync_value.subscribe((nextValue) => {
@@ -1002,23 +1018,21 @@ export class DashboardComponent {
 
   filterAgentByType() {
     this.agents_call_taker = this.agents.filter(
-      (x: any) => x.agent_type == 'Call Taker'
+      (x) => x.agent_type == 'Call Taker'
     );
     this.agents_dispatcher = this.agents.filter(
-      (x: any) => x.agent_type == 'Dispatcher'
+      (x) => x.agent_type == 'Dispatcher'
     );
     this.agents_supervisor = this.agents.filter(
-      (x: any) => x.agent_type == 'Supervisor'
+      (x) => x.agent_type == 'Supervisor'
     );
     this.agents_coordinator = this.agents.filter(
-      (x: any) => x.agent_type == 'Coordinator'
+      (x) => x.agent_type == 'Coordinator'
     );
     this.agents_non_emergency = this.agents.filter(
-      (x: any) => x.agent_type == 'Non Emergency'
+      (x) => x.agent_type == 'Non Emergency'
     );
-    this.agents_backup = this.agents.filter(
-      (x: any) => x.agent_type == 'Tablet'
-    );
+    this.agents_backup = this.agents.filter((x) => x.agent_type == 'Tablet');
   }
 
   fetchConversationSummary() {
@@ -1034,17 +1048,17 @@ export class DashboardComponent {
     }
     this._d1669Service
       .getConversationChart(url_api_summary + '/' + this.setting.chart_format)
-      .subscribe((data: any) => {
-        if (data['status'] === 'OK') {
+      .subscribe((data) => {
+        if (data['status'] == 'OK') {
           // summary
           // assign value
-          this.conversation_amount = this.conversation_amount.map((x: any) => {
+          this.conversation_amount = this.conversation_amount.map((x) => {
             if (x.id in data['data'].summary) {
               x.value = data['data'].summary[x.id];
               return x;
             }
           });
-          this.conversation_time = this.conversation_time.map((x: any) => {
+          this.conversation_time = this.conversation_time.map((x) => {
             if (x.id in data['data'].summary) {
               x.value = this.secToTime(data['data'].summary[x.id]);
               return x;
@@ -1075,7 +1089,7 @@ export class DashboardComponent {
     }
     this._d1669Service
       .getAbandonLists(url_api_abandonlist + '/' + this.setting.chart_format)
-      .subscribe((data: any) => {
+      .subscribe((data) => {
         if (data['data']) {
           this.abandon_lists = data['data'];
           this.abandon_lists = this.sortAbandon(this.abandon_lists);
@@ -1086,7 +1100,7 @@ export class DashboardComponent {
       });
   }
 
-  sortAbandon(abandon_lists: any) {
+  sortAbandon(abandon_lists) {
     if (localStorage.getItem('abandon_lists_sorting_format') == 'count') {
       abandon_lists = abandon_lists.sort(this.sortAbandonByCount);
     } else {
@@ -1095,16 +1109,16 @@ export class DashboardComponent {
     return abandon_lists;
   }
 
-  sortAbandonByCount(x: any, y: any) {
-    const n = y.amount - x.amount;
+  sortAbandonByCount(x, y) {
+    var n = y.amount - x.amount;
     if (n != 0) {
       return n;
     }
     return y.lastest_at - x.lastest_at;
   }
 
-  sortAbandonByTime(x: any, y: any) {
-    const n = y.lastest_at - x.lastest_at;
+  sortAbandonByTime(x, y) {
+    var n = y.lastest_at - x.lastest_at;
     if (n != 0) {
       return n;
     }
@@ -1112,15 +1126,15 @@ export class DashboardComponent {
   }
 
   fetchUserMapper() {
-    // this.user = this.auth.getIdentityClaims();
+    this.user = this.auth.getIdentityClaims();
   }
 
-  secToTime(sec: any) {
-    const sec_num = parseInt(sec, 10); // don't forget the second param
-    const hours = Math.floor(sec_num / 3600);
-    const minutes = Math.floor((sec_num - hours * 3600) / 60);
-    const seconds = sec_num - hours * 3600 - minutes * 60;
-    let tmp_hours, tmp_minutes, tmp_seconds;
+  secToTime(sec) {
+    var sec_num = parseInt(sec, 10); // don't forget the second param
+    var hours = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - hours * 3600) / 60);
+    var seconds = sec_num - hours * 3600 - minutes * 60;
+    var tmp_hours, tmp_minutes, tmp_seconds;
 
     if (hours < 10) {
       tmp_hours = '0' + hours;
@@ -1139,6 +1153,21 @@ export class DashboardComponent {
     timer(delay, 1000).subscribe((x) => {
       this.dashboard_datetime = new Date();
     });
+  }
+
+  sortStatus(array, order, key) {
+    array.sort(function (a, b) {
+      var A = a[key],
+        B = b[key];
+
+      if (order.indexOf(A) > order.indexOf(B)) {
+        return 1;
+      }
+      if (order.indexOf(A) < order.indexOf(B)) {
+        return -1;
+      }
+    });
+    return array;
   }
 
   checkCallStatus() {
@@ -1166,7 +1195,7 @@ export class DashboardComponent {
     });
   }
 
-  setDisplayCallTime(agent: any, index: any, calltime_type: any) {
+  setDisplayCallTime(agent, index, calltime_type) {
     if (
       agent.action == 'ANSWER' ||
       agent.action == 'RINGING' ||
@@ -1214,30 +1243,20 @@ export class DashboardComponent {
     }
   }
 
-  updateStatistic(data: {
-    action: any;
-    summary_id: any;
-    source: any;
-    action_at: any;
-  }) {
+  updateStatistic(data) {
     // update statistic once
-    const action = data.action;
+    let action = data.action;
     // check summary_id
-    if (
-      // @ts-ignore
-      this.tmp_summary_id.indexOf((data.summary_id + action) as number) == -1
-    ) {
-      // @ts-ignore
+    if (this.tmp_summary_id.indexOf(data.summary_id + action) == -1) {
       this.tmp_summary_id.push(data.summary_id + action);
     } else {
       return;
     }
-    if (environment.environment.env_mode !== 'production') console.log(action);
-    if (action === 'RINGING') {
+    if (environment.environment.env_mode != 'production') console.log(action);
+    if (action == 'RINGING') {
       // update summary
-      // @ts-ignore
       this.conversations_amount.map((x) => {
-        if (x.id === 'incoming') {
+        if (x.id == 'incoming') {
           return x.value++;
         }
       });
@@ -1245,11 +1264,10 @@ export class DashboardComponent {
       this.data_chart['incoming'][this.data_chart['incoming'].length - 1]++;
       this.globalService.setChartData(JSON.stringify(this.data_chart));
     }
-    if (action === 'ANSWER') {
+    if (action == 'ANSWER') {
       // update summary
-      // @ts-ignore
       this.conversations_amount.map((x) => {
-        if (x.id === 'answer') {
+        if (x.id == 'answer') {
           return x.value++;
         }
       });
@@ -1263,18 +1281,17 @@ export class DashboardComponent {
       action == 'QUEUE_FULL_ANOTHER_ABANDON'
     ) {
       // update summary
-      // @ts-ignore
-      this.conversations_amount.map((x: any) => {
-        if (x.id === 'abandon') {
+      this.conversations_amount.map((x) => {
+        if (x.id == 'abandon') {
           return x.value++;
         }
       });
       // update abandon lists
       let has_abandon_list = this.abandon_lists.filter(
-        (item: any) => item.source == data!.source
+        (item) => item.source == data.source
       );
       if (has_abandon_list.length > 0) {
-        this.abandon_lists.map((item: any) => {
+        this.abandon_lists.map((item) => {
           if (data.source == item.source) {
             item.amount++;
             item.lastest_at = Math.floor(Date.now() / 1000);
@@ -1300,31 +1317,38 @@ export class DashboardComponent {
     }
   }
 
+  fullscreen() {
+    let elem = document.getElementById('fullscreen');
+    if (screenfull.isEnabled) {
+      screenfull.request(elem);
+    }
+  }
+
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(
     event: KeyboardEvent
   ) {
     this.is_fullscreen = false;
   }
 
-  // toggleSetting() {
-  //   this.dialogService
-  //     .open(SettingDialogComponent, {
-  //       context: {
-  //         title: 'Setting',
-  //       },
-  //     })
-  //     .onClose.subscribe((res) => {
-  //       if (res) {
-  //         this.setting.chart_format = res;
-  //         this.initDashboard();
-  //         this.showToast(
-  //           this.toastr_status,
-  //           this.toastr_title,
-  //           this.toastr_content
-  //         );
-  //       }
-  //     });
-  // }
+  toggleSetting() {
+    this.dialogService
+      .open(SettingDialogComponent, {
+        context: {
+          title: 'Setting',
+        },
+      })
+      .onClose.subscribe((res) => {
+        if (res) {
+          this.setting.chart_format = res;
+          this.initDashboard();
+          this.showToast(
+            this.toastr_status,
+            this.toastr_title,
+            this.toastr_content
+          );
+        }
+      });
+  }
 
   private showToast(type: NbComponentStatus, title: string, body: string) {
     const config = {
@@ -1343,7 +1367,7 @@ export class DashboardComponent {
     type: NbComponentStatus,
     title: string,
     body: string,
-    special_line: any
+    special_line
   ) {
     const config = {
       status: type,

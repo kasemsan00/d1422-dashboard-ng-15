@@ -24,9 +24,6 @@ import { ThemeModule } from '../../@theme/theme.module';
 
 import { ChartsRoutingModule, routedComponents } from './charts-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DashboardChartComponent } from './dashboard/dashboard-chart.component';
-
-const components = [DashboardChartComponent];
 
 @NgModule({
   imports: [
@@ -50,6 +47,6 @@ const components = [DashboardChartComponent];
     ReactiveFormsModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-  declarations: [...routedComponents, ...components],
+  declarations: [...routedComponents],
 })
 export class ChartsModule {}
