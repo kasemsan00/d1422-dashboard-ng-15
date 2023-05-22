@@ -4,7 +4,8 @@ import { NgModule } from '@angular/core';
 import { PagesComponent } from './pages.component';
 import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
 // import { DashboardComponent } from './charts/dashboard/dashboard.component';
-import { TestComponent } from './test/test.component';
+import { TestComponent } from '../test/test.component';
+import { AppComponent } from '../app.component';
 
 const routes: Routes = [
   {

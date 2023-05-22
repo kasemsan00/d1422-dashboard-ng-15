@@ -1,4 +1,8 @@
-import { NgModule } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  NgModule,
+  NO_ERRORS_SCHEMA,
+} from '@angular/core';
 import {
   NbMenuModule,
   NbCardModule,
@@ -14,6 +18,7 @@ import {
   NbSidebarModule,
   NbDialogModule,
   NbToastrModule,
+  NbThemeModule,
 } from '@nebular/theme';
 import { ThemeModule } from '../@theme/theme.module';
 import { PagesComponent } from './pages.component';
@@ -28,6 +33,7 @@ import { PagesRoutingModule } from './pages-routing.module';
     NbUserModule,
     NbListModule,
     NbAlertModule,
+    NbThemeModule.forRoot({ name: 'default' }),
     NbIconModule,
     NbBadgeModule,
     NbProgressBarModule,
@@ -38,6 +44,7 @@ import { PagesRoutingModule } from './pages-routing.module';
     NbDialogModule.forRoot(),
     NbSidebarModule.forRoot(),
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   declarations: [PagesComponent],
 })
 export class PagesModule {}

@@ -2,6 +2,6 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-test',
-  templateUrl: './test.component.html',
+  template: `<nb-alert>TestWork</nb-alert>`,
 })
 export class TestComponent {}
