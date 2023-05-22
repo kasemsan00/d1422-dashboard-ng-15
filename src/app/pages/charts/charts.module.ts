@@ -17,15 +17,13 @@ import {
   NbButtonModule,
   NbRadioModule,
   NbSelectModule,
+  NbThemeModule,
 } from '@nebular/theme';
 
 import { ThemeModule } from '../../@theme/theme.module';
 
 import { ChartsRoutingModule, routedComponents } from './charts-routing.module';
-import { DashboardChartComponent } from './dashboard/dashboard-chart.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-const components = [DashboardChartComponent];
 
 @NgModule({
   imports: [
@@ -38,6 +36,7 @@ const components = [DashboardChartComponent];
     NbUserModule,
     NbListModule,
     NbAlertModule,
+    NbThemeModule.forRoot({ name: 'default' }),
     NbIconModule,
     NbBadgeModule,
     NbProgressBarModule,
@@ -48,6 +47,6 @@ const components = [DashboardChartComponent];
     ReactiveFormsModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-  declarations: [...routedComponents, ...components],
+  declarations: [...routedComponents],
 })
 export class ChartsModule {}

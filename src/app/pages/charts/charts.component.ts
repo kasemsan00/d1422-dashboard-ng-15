@@ -2,6 +2,6 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'd1442-dashboard-dashboard',
-  template: ` <router-outlet></router-outlet> `,
+  template: ` <nb-alert>Hello World</nb-alert> `,
 })
 export class ChartsComponent {}
