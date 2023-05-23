@@ -19,25 +19,11 @@ import { GlobalService } from '../../services/global.service';
 import { AuthService } from '../auth';
 
 @Component({
-  // styleUrls: ['./dashboard.component.scss'],
+  styleUrls: ['./dashboard.component.scss'],
   selector: 'app-dashboard',
-  // templateUrl: 'dashboard.component.html',
-  template:
-    '<div><nb-card>\n' +
-    '  <nb-card-body class="example-last-child-no-b-margin">\n' +
-    '    <nb-alert status="basic">Basic. You have been successfully authenticated!</nb-alert>\n' +
-    '    <nb-alert status="primary">Primary. You have been successfully authenticated!</nb-alert>\n' +
-    '    <nb-alert status="success">Success. You have been successfully authenticated!</nb-alert>\n' +
-    '    <nb-alert status="info">Info. You have been successfully authenticated!</nb-alert>\n' +
-    '    <nb-alert status="danger">Danger. You have been successfully authenticated!</nb-alert>\n' +
-    '    <nb-alert status="warning">Warning. You have been successfully authenticated!</nb-alert>\n' +
-    '    <div class="control-status-example">\n' +
-    '      <nb-alert status="control">Control. You have been successfully authenticated!</nb-alert>\n' +
-    '    </div>\n' +
-    '  </nb-card-body>\n' +
-    '</nb-card></div>',
+  templateUrl: 'dashboard.component.html',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   is_fullscreen: any = false;
 
   tmp_summary_id: any = [];

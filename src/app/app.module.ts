@@ -10,8 +10,8 @@ import { TokenInterceptor } from './services/token.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NbThemeModule, NbLayoutModule, NbAlertModule, NbCardModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
-import { DashboardModule } from './pages/dashboard/dashboard.module';
 import { ChartsModule } from './pages/charts/charts.module';
+import { DashboardModule } from './pages/dashboard/dashboard.module';
 
 export function init_app(appLoadService: AppInitService) {
   return () => appLoadService.init();

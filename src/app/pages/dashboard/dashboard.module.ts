@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
-import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NbThemeModule, NbLayoutModule, NbAlertModule, NbCardModule, NbIconModule, NbButtonModule } from '@nebular/theme';
@@ -16,7 +15,6 @@ import { CoreModule } from '../auth/services/core.module';
   declarations: [DashboardComponent],
   imports: [
     BrowserModule,
-    DashboardRoutingModule,
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
