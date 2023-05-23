@@ -59,20 +59,20 @@ body {
   }
 }
 
-.row {
-  width: 100%;
-  display: flex;
-  flex: 1;
-}
-
 .btn-fullscreen {
   float: right !important;
 }
 
 .fullscreen {
-  // height: calc(100vh - 60px);
-  height: 100%;
+  // background-color: #151a30; // dark -mode
+  // background-color: white;
+  // background-color: nb-theme(background-basic-color-1);
+  // background:nb-theme(color-bg);
+  // position: fixed;
+  height: calc(100vh - 60px); // 100vh;
   width: 100%;
+  // top: 5px;
+  // bottom: 5px;
   padding-top: 5px;
   margin: 5px;
 }
@@ -100,9 +100,7 @@ body {
 }
 
 .box-line-chart {
-  // height: 40vh;
-  height: 100%;
-  margin-bottom: 0;
+  height: 40vh;
 }
 
 .box-agent-status,
@@ -111,10 +109,8 @@ box-abandon-list {
 }
 
 .bottom-area {
-  // padding-bottom: 5px;
-  // height: 48vh;
-  // height: 100%;
-  margin-bottom: 0;
+  padding-bottom: 5px;
+  height: 48vh;
 }
 
 .agent_pie {
@@ -199,8 +195,7 @@ nb-card-header {
 }
 
 .box-value-time {
-  // font-size: 4.5vh;
-  font-size: 3vw;
+  font-size: 4.5vh;
   font-weight: 300;
   text-align: center;
   padding: 0.3vw;
@@ -268,46 +263,18 @@ s .box-value-agent {
 
 .col-fixed-3 {
   width: 24.5vw;
-  // height: 100%;
+  height: 50vh;
   padding-left: 5px;
   padding-right: 5px;
 }
 
 .col-fixed-4 {
   width: 33vw;
-  // height: 42.5vh;
-  height: 42%;
+  height: 42.5vh;
   padding-left: 5px;
   padding-right: 5px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  row-gap: 0.5rem;
-  column-gap: 0.5rem;
 }
-.item-row {
-  min-width: 40%;
-  flex: 1;
-}
-.item-alert {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  margin-bottom: 0;
-}
-.status-info {
-  margin-bottom: 0 !important;
-}
-.item {
-  display: block;
-  min-height: 100%;
-}
-.item-alert {
-  width: 100%;
-  height: 100%;
-}
+
 .col-fixed-6 {
   width: 50.3vw;
   height: 50vh;
@@ -317,15 +284,13 @@ s .box-value-agent {
 
 .col-fixed-8 {
   width: 66.4vw;
-  // height: 42.5vh;
-  height: 42%;
+  height: 42.5vh;
   padding-left: 5px;
   padding-right: 5px;
 }
 
 .col-fixed-9 {
   width: 74.7vw;
-  // height: 100%;
   padding-left: 5px;
   padding-right: 5px;
 }

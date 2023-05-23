@@ -8,17 +8,18 @@ import { AppInitService } from './app.init';
 import { AppComponent } from './app.component';
 import { TokenInterceptor } from './services/token.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NbThemeModule, NbLayoutModule, NbAlertModule, NbCardModule } from '@nebular/theme';
+import { NbThemeModule, NbLayoutModule, NbAlertModule, NbCardModule, NbActionsModule, NbUserModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { ChartsModule } from './pages/charts/charts.module';
 import { DashboardModule } from './pages/dashboard/dashboard.module';
+import { HeaderComponent } from './components/header/header.component';
 
 export function init_app(appLoadService: AppInitService) {
   return () => appLoadService.init();
 }
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, HeaderComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -33,6 +34,8 @@ export function init_app(appLoadService: AppInitService) {
     NbLayoutModule,
     NbEvaIconsModule,
     NbCardModule,
+    NbActionsModule,
+    NbUserModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [
@@ -49,6 +52,7 @@ export function init_app(appLoadService: AppInitService) {
       multi: true,
     },
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent, HeaderComponent],
+  exports: [HeaderComponent],
 })
 export class AppModule {}

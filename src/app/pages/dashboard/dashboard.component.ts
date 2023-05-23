@@ -300,10 +300,11 @@ export class DashboardComponent implements OnInit {
 
   initDashboard() {
     console.log('fetchConversationSummary');
+    this.fetchConversationSummary();
+
     this.display_realtime_date();
     this.fetchAgents();
     // console.log(this.evaIcons)
-    this.fetchConversationSummary();
     this.fetchAbandonLists();
     this.fetchDataSSE();
     this.fetchSIPStatus();
@@ -903,14 +904,19 @@ export class DashboardComponent implements OnInit {
   }
 
   fetchConversationSummary() {
-    console.log('fetchConversationSummary');
+    console.log('fetchConversationSummary', this.url_mapper);
+    console.log('conversations_amount', this.conversations_amount);
+
+    this.conversations_amount = this.conversation_amount;
+    this.conversations_time = this.conversation_time;
+
     let url_api_summary = '';
     if (this.url_mode == 'mapper') {
       url_api_summary = this.url_mapper.api_summary;
     } else {
       url_api_summary = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/summary';
     }
-    console.log('fetchConversationSummary');
+
     this._d1669Service.getConversationChart(url_api_summary + '/' + this.setting.chart_format).subscribe((data: any) => {
       if (data['status'] == 'OK') {
         console.log('GetConversationChart', data);
