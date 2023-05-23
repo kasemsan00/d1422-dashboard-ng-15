@@ -29,7 +29,7 @@ export function init_app(appLoadService: AppInitService) {
     BrowserAnimationsModule,
     NbAlertModule,
     NbThemeModule.forRoot({ name: 'default' }),
-    CoreModule.forRoot(),
+    // CoreModule.forRoot(),
     NbLayoutModule,
     NbEvaIconsModule,
     NbCardModule,

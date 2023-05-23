@@ -15,6 +15,7 @@ import {
   NbDialogModule,
   NbToastrModule,
   NbThemeModule,
+  NbLayoutModule,
 } from '@nebular/theme';
 import { ThemeModule } from '../@theme/theme.module';
 import { PagesComponent } from './pages.component';
@@ -39,6 +40,7 @@ import { PagesRoutingModule } from './pages-routing.module';
     NbToastrModule.forRoot(),
     NbDialogModule.forRoot(),
     NbSidebarModule.forRoot(),
+    NbLayoutModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   declarations: [PagesComponent],

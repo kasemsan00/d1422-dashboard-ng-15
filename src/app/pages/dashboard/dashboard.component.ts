@@ -23,7 +23,7 @@ import { AuthService } from '../auth';
   selector: 'app-dashboard',
   templateUrl: 'dashboard.component.html',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   is_fullscreen: any = false;
 
   tmp_summary_id: any = [];
@@ -299,6 +299,7 @@ export class DashboardComponent {
   }
 
   initDashboard() {
+    console.log('fetchConversationSummary');
     this.display_realtime_date();
     this.fetchAgents();
     // console.log(this.evaIcons)
@@ -323,6 +324,7 @@ export class DashboardComponent {
   }
 
   fetchURLMapper() {
+    this.initDashboard();
     this._d1669Service
       .getMapper(
         environment.environment.url_mapper +
@@ -901,14 +903,17 @@ export class DashboardComponent {
   }
 
   fetchConversationSummary() {
+    console.log('fetchConversationSummary');
     let url_api_summary = '';
     if (this.url_mode == 'mapper') {
       url_api_summary = this.url_mapper.api_summary;
     } else {
       url_api_summary = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/summary';
     }
+    console.log('fetchConversationSummary');
     this._d1669Service.getConversationChart(url_api_summary + '/' + this.setting.chart_format).subscribe((data: any) => {
       if (data['status'] == 'OK') {
+        console.log('GetConversationChart', data);
         // summary
         // assign value
         this.conversation_amount = this.conversation_amount.map((x: any) => {

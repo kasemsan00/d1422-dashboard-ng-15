@@ -5,7 +5,13 @@ import { MENU_ITEMS } from './pages-menu';
 @Component({
   selector: 'app-dashboard-pages',
   styleUrls: ['pages.component.scss'],
-  template: ` <router-outlet></router-outlet> `,
+  template: `
+    <nb-layout>
+      <nb-layout-column>
+        <router-outlet></router-outlet>
+      </nb-layout-column>
+    </nb-layout>
+  `,
 })
 export class PagesComponent {
   menu = MENU_ITEMS;
