@@ -8,16 +8,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 
 @NgModule({
-  imports: [
-    ThemeModule,
-    NbCardModule,
-    NbButtonModule,
-    MiscellaneousRoutingModule,
-  ],
-  declarations: [
-    MiscellaneousComponent,
-    NotFoundComponent,
-    ForbiddenComponent,
-  ],
+  imports: [ThemeModule, NbCardModule, NbButtonModule, MiscellaneousRoutingModule],
+  declarations: [MiscellaneousComponent, NotFoundComponent, ForbiddenComponent],
 })
-export class MiscellaneousModule { }
+export class MiscellaneousModule {}

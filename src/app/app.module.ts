@@ -1,24 +1,21 @@
-import {
-  CUSTOM_ELEMENTS_SCHEMA,
-  NgModule,
-  NO_ERRORS_SCHEMA,
-} from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CoreModule } from './pages/auth/services/core.module';
 import { AppRoutingModule } from './app-routing.module';
+import { AppInitService } from './app.init';
 import { AppComponent } from './app.component';
+import { TokenInterceptor } from './services/token.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {
-  NbThemeModule,
-  NbLayoutModule,
-  NbAlertModule,
-  NbCardModule,
-} from '@nebular/theme';
+import { NbThemeModule, NbLayoutModule, NbAlertModule, NbCardModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { DashboardModule } from './pages/dashboard/dashboard.module';
 import { ChartsModule } from './pages/charts/charts.module';
+
+export function init_app(appLoadService: AppInitService) {
+  return () => appLoadService.init();
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,12 +29,26 @@ import { ChartsModule } from './pages/charts/charts.module';
     BrowserAnimationsModule,
     NbAlertModule,
     NbThemeModule.forRoot({ name: 'default' }),
+    CoreModule.forRoot(),
     NbLayoutModule,
     NbEvaIconsModule,
     NbCardModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
+    AppInitService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: init_app,
+      deps: [AppInitService],
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

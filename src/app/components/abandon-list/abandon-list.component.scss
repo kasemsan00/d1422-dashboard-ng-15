@@ -1,0 +1,60 @@
+.object-fit_fill {
+  object-fit: fill;
+}
+
+.clock_abandon {
+  font-size: 0.9vw;
+  font-weight: 600;
+}
+
+.right-box {
+  // z-index: 1;
+  float: right;
+  padding-right: 2px;
+  margin-left: auto;
+  text-align: right;
+  // padding-top: 10px;
+  // padding-bottom: 10px;
+}
+
+.abandons-list {
+  max-height: 2.77vw !important;
+  padding: 0.4rem;
+}
+
+.no_abandon {
+  font-size: 2vh;
+  font-weight: 500;
+  text-align: center;
+  padding: 0.3vw;
+  vertical-align: middle;
+}
+
+.bottom-area {
+  padding-bottom: 5px;
+  height: 48vh;
+}
+
+nb-list-item {
+  max-height: 5vw !important;
+}
+
+.agent-source {
+  font-size: 1.7vh;
+  font-weight: 600;
+}
+
+.agent-name {
+  font-size: 1vw;
+  font-weight: 600;
+  padding: 0.3vw;
+}
+
+nb-icon {
+  font-size: 1vw;
+}
+
+.last-abandon {
+  animation: blinker 1s linear infinite;
+  background-color: #ff8484;
+}

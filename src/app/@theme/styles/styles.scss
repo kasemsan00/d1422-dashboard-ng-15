@@ -5,8 +5,7 @@
 
 // framework component themes (styles tied to theme variables)
 @import '@nebular/theme/styles/globals';
-@import '@nebular/auth/styles/all';
-
+@import '@nebular/auth/styles/globals';
 
 // loading progress bar theme
 @import './pace.theme';
@@ -16,7 +15,6 @@
 
 // install the framework and custom global styles
 @include nb-install() {
-
   // framework global styles
   @include nb-theme-global();
   @include nb-auth-global();
@@ -26,4 +24,4 @@
   @include ngx-pace-theme();
 
   @include nb-overrides();
-};
+}

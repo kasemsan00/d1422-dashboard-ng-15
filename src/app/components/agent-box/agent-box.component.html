@@ -1,0 +1,98 @@
+<nb-alert
+  class="center_element agent_status"
+  [outline]="
+    user.action == 'DND_OFF' || user.action == 'NO_ANSWER' || user.action == 'HANGUP'
+      ? 'success'
+      : user.action == 'DND_SHORT' || user.action == 'DND_LONG'
+      ? 'danger'
+      : user.action == 'RINGING' ||
+        user.action == 'ANSWER' ||
+        user.action == 'TRANSFER' ||
+        user.action == 'LOST_TRANSFER' ||
+        user.action == 'JOIN_CONFERENCE' ||
+        (user.action && user.action.includes('CONFERENCE') && user.source != user.agent_extension) ||
+        user.action == 'TRANSFER_JOIN_CALLING'
+      ? 'warning'
+      : ''
+  "
+  [className]="user.action == 'RINGING' ? 'phone-ringing' : ''"
+>
+  <div [className]="user.agent_type_id != 8 ? 'box-status-agent' : 'box-status-agent-backup'">
+    <i
+      class="fa fa-circle color-success"
+      *ngIf="user.action == 'DND_OFF' || user.action == 'NO_ANSWER' || user.action == 'HANGUP'"
+      aria-hidden="true"
+    ></i>
+    <i
+      class="fa fa-circle color-warning"
+      *ngIf="
+        user.action == 'RINGING' ||
+        user.action == 'ANSWER' ||
+        user.action == 'JOIN_CONFERENCE' ||
+        (user.action && user.action.includes('CONFERENCE') && user.a_number != user.agent_extension) ||
+        user.action == 'TRANSFER_JOIN_CALLING' ||
+        user.action == 'TRANSFER' ||
+        user.action == 'LOST_TRANSFER'
+      "
+      aria-hidden="true"
+    ></i>
+    <i class="fa fa-circle color-danger" *ngIf="user.action == 'DND_SHORT' || user.action == 'DND_LONG'" aria-hidden="true"></i>
+    <i class="fa fa-circle color-default" *ngIf="user.action == 'OFFLINE'" aria-hidden="true"></i>
+    <!-- {{ user.name != undefined? user.name + ' ' + user.last_name: user.agent_username }} -->
+    {{ user.name != undefined && user.last_name != undefined && display_name == 'name' ? user.name + ' ' + user.last_name : user.agent_username }}
+    <span
+      *ngIf="
+        user.action == 'RINGING' ||
+        user.action == 'ANSWER' ||
+        user.action == 'JOIN_CONFERENCE' ||
+        (user.action && user.action.includes('CONFERENCE') && user.a_number != user.agent_extension) ||
+        user.action == 'TRANSFER'
+      "
+    >
+      <nb-icon
+        class="icon-backup"
+        [className]="
+          user.action == 'JOIN_CONFERENCE' || (user.action && user.action.includes('CONFERENCE') && user.a_number != user.agent_extension)
+            ? 'phone-ringing'
+            : 'phone-talking'
+        "
+        icon="people"
+        pack="eva"
+        *ngIf="user.action == 'JOIN_CONFERENCE' || (user.action && user.action.includes('CONFERENCE') && user.a_number != user.agent_extension)"
+      >
+      </nb-icon>
+      <nb-icon
+        class="icon-backup"
+        [className]="user.action == 'TRANSFER' ? 'phone-ringing' : 'phone-talking'"
+        icon="swap"
+        pack="eva"
+        *ngIf="user.action == 'TRANSFER'"
+      >
+      </nb-icon>
+      <nb-icon class="icon-backup" [className]="user.action == 'RINGING' ? 'phone-ringing' : 'phone-talking'" icon="phone-call" pack="eva"> </nb-icon>
+    </span>
+    <span *ngIf="agent_length <= 4 && agent_length > 0 && user.agent_type_id != 8">({{ user.agent_extension }})</span>
+    <!-- <span *ngIf="agent_length==0" class="no_agent">No agent</span> -->
+  </div>
+  <div
+    class="box-title-agent"
+    *ngIf="
+      user.action == 'RINGING' ||
+      user.action == 'ANSWER' ||
+      user.action == 'TRANSFER' ||
+      user.action == 'LOST_TRANSFER' ||
+      user.action == 'JOIN_CONFERENCE' ||
+      (user.action && user.action.includes('CONFERENCE') && user.a_number != user.agent_extension) ||
+      user.action == 'TRANSFER_JOIN_CALLING'
+    "
+  >
+    <!-- <span
+            *ngIf="agent_length <= 4 && display_calltime != ''">{{ user.bound_type == 'inbound'? user.source: user.destination }}
+            [{{ user.source_type == 'Unknown'? "Conference": user.source_type }}]</span> -->
+    <span *ngIf="(agent_length <= 4 && display_calltime != '') || user.agent_type_id == 8"
+      >{{ user.a_number }} [{{ user.source_type == 'Unknown' ? 'Conference' : user.source_type }}]</span
+    >
+    <span *ngIf="display_calltime != ''">({{ display_calltime | date : 'mm:ss' }})</span>
+    <span *ngIf="display_calltime == ''">Busy</span>
+  </div>
+</nb-alert>

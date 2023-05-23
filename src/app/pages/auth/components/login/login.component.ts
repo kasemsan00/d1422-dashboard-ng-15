@@ -27,8 +27,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {
     this.isAuthenticated$ = this.authService.isAuthenticated$;
     this.isDoneLoading$ = this.authService.isDoneLoading$;
-    this.canActivateProtectedRoutes$ =
-      this.authService.canActivateProtectedRoutes$;
+    this.canActivateProtectedRoutes$ = this.authService.canActivateProtectedRoutes$;
     // redirect to home if already logged in
     if (this.isAuthenticated$) {
       this.router.navigate(['/']);

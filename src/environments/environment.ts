@@ -1,6 +1,5 @@
 import { DynamicEnvironment } from './dynamic-environment';
 class Environment extends DynamicEnvironment {
-
   public production: boolean;
   constructor() {
     super();
@@ -8,4 +7,4 @@ class Environment extends DynamicEnvironment {
   }
 }
 
-export const environment = new Environment()
+export const environment = new Environment();

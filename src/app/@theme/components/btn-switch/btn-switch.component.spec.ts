@@ -8,9 +8,8 @@ describe('BtnSwitchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [BtnSwitchComponent]
-    })
-      .compileComponents();
+      declarations: [BtnSwitchComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

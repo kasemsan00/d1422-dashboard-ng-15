@@ -26,10 +26,7 @@ const routes: Routes = [
       // },
       {
         path: 'miscellaneous',
-        loadChildren: () =>
-          import('./miscellaneous/miscellaneous.module').then(
-            (m) => m.MiscellaneousModule
-          ),
+        loadChildren: () => import('./miscellaneous/miscellaneous.module').then((m) => m.MiscellaneousModule),
       },
       {
         path: '',

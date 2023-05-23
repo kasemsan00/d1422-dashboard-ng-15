@@ -12,13 +12,11 @@ import {
 export const routes: Routes = [
   {
     path: '',
-    loadChildren: () =>
-      import('./pages/pages.module').then((m) => m.PagesModule),
+    loadChildren: () => import('./pages/pages.module').then((m) => m.PagesModule),
   },
   {
     path: 'auth',
-    loadChildren: () =>
-      import('./pages/auth/auth.module').then((m) => m.AuthModule),
+    loadChildren: () => import('./pages/auth/auth.module').then((m) => m.AuthModule),
   },
   {
     path: 'auth2',

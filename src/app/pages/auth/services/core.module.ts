@@ -1,17 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
-import {
-  APP_INITIALIZER,
-  ModuleWithProviders,
-  NgModule,
-  Optional,
-  SkipSelf,
-} from '@angular/core';
-import {
-  AuthConfig,
-  OAuthModule,
-  OAuthModuleConfig,
-  OAuthStorage,
-} from 'angular-oauth2-oidc';
+import { APP_INITIALIZER, ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
+import { AuthConfig, OAuthModule, OAuthModuleConfig, OAuthStorage } from 'angular-oauth2-oidc';
 import { authAppInitializerFactory } from './auth-app-initializer.factory';
 import { authConfig } from './auth-config';
 import { AuthGuardWithForcedLogin } from './auth-guard-with-forced-login.service';
@@ -48,9 +37,7 @@ export class CoreModule {
 
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
     if (parentModule) {
-      throw new Error(
-        'CoreModule is already loaded. Import it in the AppModule only'
-      );
+      throw new Error('CoreModule is already loaded. Import it in the AppModule only');
     }
   }
 }

@@ -11,11 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 export class ForbiddenComponent implements OnInit {
   system: string = 'OIS';
 
-  constructor(
-    private menuService: NbMenuService,
-    private auth: AuthService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private menuService: NbMenuService, private auth: AuthService, private route: ActivatedRoute) {}
 
   ngOnInit() {
     const system = this.route.snapshot.paramMap.get('system');

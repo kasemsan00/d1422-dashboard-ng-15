@@ -1,8 +1,4 @@
-import {
-  ModuleWithProviders,
-  NgModule,
-  CUSTOM_ELEMENTS_SCHEMA,
-} from '@angular/core';
+import { ModuleWithProviders, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   NbActionsModule,
@@ -23,24 +19,9 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import {
-  FooterComponent,
-  HeaderComponent,
-  SearchInputComponent,
-  TinyMCEComponent,
-} from './components';
-import {
-  CapitalizePipe,
-  PluralPipe,
-  RoundPipe,
-  TimingPipe,
-  NumberWithCommasPipe,
-} from './pipes';
-import {
-  OneColumnLayoutComponent,
-  ThreeColumnsLayoutComponent,
-  TwoColumnsLayoutComponent,
-} from './layouts';
+import { FooterComponent, HeaderComponent, SearchInputComponent, TinyMCEComponent } from './components';
+import { CapitalizePipe, PluralPipe, RoundPipe, TimingPipe, NumberWithCommasPipe } from './pipes';
+import { OneColumnLayoutComponent, ThreeColumnsLayoutComponent, TwoColumnsLayoutComponent } from './layouts';
 import { DEFAULT_THEME } from './styles/theme.default';
 import { COSMIC_THEME } from './styles/theme.cosmic';
 import { CORPORATE_THEME } from './styles/theme.corporate';
@@ -75,30 +56,12 @@ const COMPONENTS = [
   ThreeColumnsLayoutComponent,
   TwoColumnsLayoutComponent,
 ];
-const PIPES = [
-  CapitalizePipe,
-  PluralPipe,
-  RoundPipe,
-  TimingPipe,
-  NumberWithCommasPipe,
-];
+const PIPES = [CapitalizePipe, PluralPipe, RoundPipe, TimingPipe, NumberWithCommasPipe];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ...NB_MODULES,
-    FormsModule,
-    ReactiveFormsModule,
-    NbThemeModule.forRoot({ name: 'default' }),
-  ],
+  imports: [CommonModule, ...NB_MODULES, FormsModule, ReactiveFormsModule, NbThemeModule.forRoot({ name: 'default' })],
   exports: [CommonModule, ...PIPES, ...COMPONENTS],
-  declarations: [
-    ...COMPONENTS,
-    ...PIPES,
-    ToggleSettingsButtonComponent,
-    SettingDialogComponent,
-    BtnSwitchComponent,
-  ],
+  declarations: [...COMPONENTS, ...PIPES, ToggleSettingsButtonComponent, SettingDialogComponent, BtnSwitchComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ThemeModule {

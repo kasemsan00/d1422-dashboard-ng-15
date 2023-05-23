@@ -10,12 +10,7 @@ import { GlobalService } from './global.service';
 export class D1669Service {
   dedicatedWorker: Worker;
 
-  constructor(
-    private _zone: NgZone,
-    private _sseService: SseService,
-    private http: HttpClient,
-    private globalService: GlobalService
-  ) {
+  constructor(private _zone: NgZone, private _sseService: SseService, private http: HttpClient, private globalService: GlobalService) {
     this.dedicatedWorker = new Worker('../dedicated-worker.worker', {
       type: 'module',
     });

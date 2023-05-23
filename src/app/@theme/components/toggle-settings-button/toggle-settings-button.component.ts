@@ -36,10 +36,7 @@ export class ToggleSettingsButtonComponent {
   // @ts-ignore
   config: NbToastrConfig;
 
-  constructor(
-    private dialogService: NbDialogService,
-    private toastrService: NbToastrService
-  ) {}
+  constructor(private dialogService: NbDialogService, private toastrService: NbToastrService) {}
 
   toggleSetting() {
     this.dialogService
@@ -52,11 +49,7 @@ export class ToggleSettingsButtonComponent {
         if (res) {
           this.setting.chart_format = res;
           // this.initDashboard()
-          this.showToast(
-            this.toastr_status,
-            this.toastr_title,
-            this.toastr_content
-          );
+          this.showToast(this.toastr_status, this.toastr_title, this.toastr_content);
         }
       });
   }

@@ -13,9 +13,7 @@
               <ngx-btn-switch
                 [yesTitle]="'Last 24 Hours'"
                 [noTitle]="'Today'"
-                [value]="
-                  form.get('chart_format')?.value === '24hr' ? true : false
-                "
+                [value]="form.get('chart_format')?.value === '24hr' ? true : false"
                 (valueChange)="selectChartFormatChange($event)"
               >
               </ngx-btn-switch>
@@ -25,9 +23,7 @@
               <ngx-btn-switch
                 [yesTitle]="'Name'"
                 [noTitle]="'Username'"
-                [value]="
-                  form.get('display_name')?.value === 'name' ? true : false
-                "
+                [value]="form.get('display_name')?.value === 'name' ? true : false"
                 (valueChange)="selectDisplayNameChange($event)"
               >
               </ngx-btn-switch>
@@ -44,29 +40,15 @@
               <ngx-btn-switch
                 [yesTitle]="'Count'"
                 [noTitle]="'Time'"
-                [value]="
-                  form.get('abandon_lists_sorting_format')?.value === 'count'
-                    ? true
-                    : false
-                "
-                (valueChange)="
-                  selectAbandonListsSortingFormatFormatChange($event)
-                "
+                [value]="form.get('abandon_lists_sorting_format')?.value === 'count' ? true : false"
+                (valueChange)="selectAbandonListsSortingFormatFormatChange($event)"
               >
               </ngx-btn-switch>
             </div>
             <div class="form-group">
               <label class="label">Duration of data syncing</label>
-              <nb-select
-                placeholder="Select Duration"
-                [(selected)]="durationSelected"
-                (selectedChange)="durationChange($event)"
-              >
-                <nb-option
-                  [value]="item.value"
-                  *ngFor="let item of duration_sync"
-                  >{{ item.text }}
-                </nb-option>
+              <nb-select placeholder="Select Duration" [(selected)]="durationSelected" (selectedChange)="durationChange($event)">
+                <nb-option [value]="item.value" *ngFor="let item of duration_sync">{{ item.text }} </nb-option>
               </nb-select>
             </div>
           </div>
@@ -76,9 +58,7 @@
               <ngx-btn-switch
                 [yesTitle]="'Show'"
                 [noTitle]="'Hide'"
-                [value]="
-                  form.get('incoming_label')?.value === 'show' ? true : false
-                "
+                [value]="form.get('incoming_label')?.value === 'show' ? true : false"
                 (valueChange)="selectIncomingChange($event)"
               >
               </ngx-btn-switch>
@@ -88,9 +68,7 @@
               <ngx-btn-switch
                 [yesTitle]="'Show'"
                 [noTitle]="'Hide'"
-                [value]="
-                  form.get('answered_label')?.value === 'show' ? true : false
-                "
+                [value]="form.get('answered_label')?.value === 'show' ? true : false"
                 (valueChange)="selectAnsweredChange($event)"
               >
               </ngx-btn-switch>
@@ -100,9 +78,7 @@
               <ngx-btn-switch
                 [yesTitle]="'Show'"
                 [noTitle]="'Hide'"
-                [value]="
-                  form.get('abandoned_label')?.value === 'show' ? true : false
-                "
+                [value]="form.get('abandoned_label')?.value === 'show' ? true : false"
                 (valueChange)="selectAbandonedChange($event)"
               >
               </ngx-btn-switch>
@@ -112,19 +88,8 @@
       </form>
     </nb-card-body>
     <nb-card-footer>
-      <button nbButton (click)="dismiss()">close</button>&nbsp;
-      <button nbButton hero status="primary" (click)="saveSetting()">
-        Save</button
-      >&nbsp;
-      <button
-        nbButton
-        hero
-        status="warning"
-        (click)="clearNoti()"
-        *ngIf="show_cls_noti_btn"
-      >
-        Clear Notifications
-      </button>
+      <button nbButton (click)="dismiss()">close</button>&nbsp; <button nbButton hero status="primary" (click)="saveSetting()">Save</button>&nbsp;
+      <button nbButton hero status="warning" (click)="clearNoti()" *ngIf="show_cls_noti_btn">Clear Notifications</button>
     </nb-card-footer>
   </nb-card>
 </div>

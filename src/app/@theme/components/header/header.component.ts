@@ -1,11 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, interval } from 'rxjs';
-import {
-  NbMediaBreakpointsService,
-  NbMenuService,
-  NbSidebarService,
-  NbThemeService,
-} from '@nebular/theme';
+import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService } from '@nebular/theme';
 
 import { UserData } from '../../../@core/data/users';
 import { map, takeUntil } from 'rxjs/operators';
@@ -78,12 +73,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.chkBranchName();
     this.currentTheme = this.themeService.currentTheme;
 
-    this.globalService.last_update_value.subscribe(
-      (data) => (this.last_update = data)
-    );
-    this.globalService.agent_data_value.subscribe(
-      (data) => (this.agent_data = data)
-    );
+    this.globalService.last_update_value.subscribe((data) => (this.last_update = data));
+    this.globalService.agent_data_value.subscribe((data) => (this.agent_data = data));
 
     // this.userService.getUsers()
     //   .pipe(takeUntil(this.destroy$))
@@ -102,9 +93,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         map(([, currentBreakpoint]) => currentBreakpoint.width < xl),
         takeUntil(this.destroy$)
       )
-      .subscribe(
-        (isLessThanXl: boolean) => (this.userPictureOnly = isLessThanXl)
-      );
+      .subscribe((isLessThanXl: boolean) => (this.userPictureOnly = isLessThanXl));
 
     this.themeService
       .onThemeChange()

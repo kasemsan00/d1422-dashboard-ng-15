@@ -35,15 +35,9 @@ export class SettingDialogComponent implements OnInit {
   answered_label: any;
   abandoned_label: any;
 
-  constructor(
-    protected ref: NbDialogRef<SettingDialogComponent>,
-    private formBuilder: FormBuilder,
-    private globalService: GlobalService
-  ) {
+  constructor(protected ref: NbDialogRef<SettingDialogComponent>, private formBuilder: FormBuilder, private globalService: GlobalService) {
     this.createForm();
-    this.durationSelected = parseInt(
-      localStorage.getItem('duration_sync')!.toString()
-    );
+    this.durationSelected = parseInt(localStorage.getItem('duration_sync')!.toString());
   }
 
   ngOnInit() {
@@ -57,24 +51,12 @@ export class SettingDialogComponent implements OnInit {
   createForm() {
     this.form = this.formBuilder.group({
       chart_format: [localStorage.getItem('chart_format'), Validators.required],
-      abandon_lists_sorting_format: [
-        localStorage.getItem('abandon_lists_sorting_format'),
-        Validators.required,
-      ],
+      abandon_lists_sorting_format: [localStorage.getItem('abandon_lists_sorting_format'), Validators.required],
       display_name: [localStorage.getItem('display_name'), Validators.required],
       agent_mode: [localStorage.getItem('agent_mode'), Validators.required],
-      incoming_label: [
-        localStorage.getItem('incoming_label'),
-        Validators.required,
-      ],
-      answered_label: [
-        localStorage.getItem('answered_label'),
-        Validators.required,
-      ],
-      abandoned_label: [
-        localStorage.getItem('abandoned_label'),
-        Validators.required,
-      ],
+      incoming_label: [localStorage.getItem('incoming_label'), Validators.required],
+      answered_label: [localStorage.getItem('answered_label'), Validators.required],
+      abandoned_label: [localStorage.getItem('abandoned_label'), Validators.required],
     });
   }
 
@@ -83,9 +65,7 @@ export class SettingDialogComponent implements OnInit {
   }
 
   selectAbandonListsSortingFormatFormatChange(e: Event) {
-    this.form.controls['abandon_lists_sorting_format'].setValue(
-      e ? 'count' : 'time'
-    );
+    this.form.controls['abandon_lists_sorting_format'].setValue(e ? 'count' : 'time');
   }
 
   selectDisplayNameChange(e: Event) {
@@ -110,9 +90,7 @@ export class SettingDialogComponent implements OnInit {
 
   saveSetting() {
     this.chart_format = this.form.get('chart_format')?.value;
-    this.abandon_lists_sorting_format = this.form.get(
-      'abandon_lists_sorting_format'
-    )?.value;
+    this.abandon_lists_sorting_format = this.form.get('abandon_lists_sorting_format')?.value;
     this.display_name = this.form.get('display_name')?.value;
     this.agent_mode = this.form.get('agent_mode')?.value;
     this.incoming_label = this.form.get('incoming_label')?.value;
@@ -120,10 +98,7 @@ export class SettingDialogComponent implements OnInit {
     this.abandoned_label = this.form.get('abandoned_label')?.value;
 
     localStorage.setItem('chart_format', this.chart_format); // 24hr, today
-    localStorage.setItem(
-      'abandon_lists_sorting_format',
-      this.abandon_lists_sorting_format
-    ); // count, time
+    localStorage.setItem('abandon_lists_sorting_format', this.abandon_lists_sorting_format); // count, time
     localStorage.setItem('display_name', this.display_name); // username, name
     localStorage.setItem('agent_mode', this.agent_mode); // normal, backup
     localStorage.setItem('incoming_label', this.incoming_label); // show, hide

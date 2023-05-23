@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import {
   NbIconLibraries,
   NbComponentStatus,
@@ -16,12 +16,28 @@ import { NbDialogService, NbToastRef } from '@nebular/theme';
 import { Router, ActivatedRoute } from '@angular/router';
 import { interval, forkJoin, Subscription } from 'rxjs';
 import { GlobalService } from '../../services/global.service';
+import { AuthService } from '../auth';
 
 @Component({
+  // styleUrls: ['./dashboard.component.scss'],
   selector: 'app-dashboard',
-  templateUrl: 'dashboard.component.html',
+  // templateUrl: 'dashboard.component.html',
+  template:
+    '<div><nb-card>\n' +
+    '  <nb-card-body class="example-last-child-no-b-margin">\n' +
+    '    <nb-alert status="basic">Basic. You have been successfully authenticated!</nb-alert>\n' +
+    '    <nb-alert status="primary">Primary. You have been successfully authenticated!</nb-alert>\n' +
+    '    <nb-alert status="success">Success. You have been successfully authenticated!</nb-alert>\n' +
+    '    <nb-alert status="info">Info. You have been successfully authenticated!</nb-alert>\n' +
+    '    <nb-alert status="danger">Danger. You have been successfully authenticated!</nb-alert>\n' +
+    '    <nb-alert status="warning">Warning. You have been successfully authenticated!</nb-alert>\n' +
+    '    <div class="control-status-example">\n' +
+    '      <nb-alert status="control">Control. You have been successfully authenticated!</nb-alert>\n' +
+    '    </div>\n' +
+    '  </nb-card-body>\n' +
+    '</nb-card></div>',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   is_fullscreen: any = false;
 
   tmp_summary_id: any = [];
@@ -169,7 +185,7 @@ export class DashboardComponent {
 
   data_chart: any;
 
-  evaIcons = [];
+  evaIcons: any = [];
   play: any = false;
   interval: any;
   time: any = 0;
@@ -205,9 +221,7 @@ export class DashboardComponent {
     private globalService: GlobalService,
     private route: ActivatedRoute
   ) {
-    this.evaIcons = Array.from(iconsLibrary.getPack('eva').icons.keys()).filter(
-      (icon) => icon.indexOf('outline') === -1
-    );
+    this.evaIcons = Array.from(iconsLibrary.getPack('eva').icons.keys()).filter((icon) => icon.indexOf('outline') === -1);
 
     iconsLibrary.registerFontPack('fa', {
       packClass: 'fa',
@@ -232,12 +246,11 @@ export class DashboardComponent {
   }
 
   ngOnDestroy() {
-    if (this.statisticSubscription && !this.statisticSubscription.closed)
-      this.statisticSubscription.unsubscribe();
+    if (this.statisticSubscription && !this.statisticSubscription.closed) this.statisticSubscription.unsubscribe();
   }
 
   checkMode() {
-    this.route.params.subscribe((params) => {
+    this.route.params.subscribe((params: any) => {
       let branch_id = params.branch_id;
       if (branch_id) {
         this.url_mode = 'fixed';
@@ -250,34 +263,27 @@ export class DashboardComponent {
     });
   }
 
-  getBranchName(branch_id) {
+  getBranchName(branch_id: string) {
     console.log('branch_id', branch_id);
     this.globalService.branch_name = '';
-    this._d1669Service
-      .getBranch(
-        environment.environment.url_backend +
-          '/mapper-agent/v1/branchs?limit=100'
-      )
-      .subscribe((data) => {
-        if (data['status'] == 'OK') {
-          data['data']['data'].map((item) => {
-            if (item.branch_id == branch_id) {
-              console.log('branch_name1', item.branch_name);
-              this.globalService.branch_name = item.branch_name;
-              return;
-            }
-          });
-        }
-        // this.globalService.branch_name = 'UNKNOW'
-        return;
-      });
+    this._d1669Service.getBranch(environment.environment.url_backend + '/mapper-agent/v1/branchs?limit=100').subscribe((data: any) => {
+      if (data['status'] == 'OK') {
+        data['data']['data'].map((item: any) => {
+          if (item.branch_id == branch_id) {
+            console.log('branch_name1', item.branch_name);
+            this.globalService.branch_name = item.branch_name;
+            return;
+          }
+        });
+      }
+      // this.globalService.branch_name = 'UNKNOW'
+      return;
+    });
   }
 
   initSetting() {
     let chart_format = localStorage.getItem('chart_format');
-    let abandon_lists_sorting_format = localStorage.getItem(
-      'abandon_lists_sorting_format'
-    );
+    let abandon_lists_sorting_format = localStorage.getItem('abandon_lists_sorting_format');
     let display_name = localStorage.getItem('display_name');
     let agent_mode = localStorage.getItem('agent_mode');
     if (chart_format) {
@@ -288,15 +294,9 @@ export class DashboardComponent {
     }
     if (abandon_lists_sorting_format) {
       this.setting.abandon_lists_sorting_format = abandon_lists_sorting_format;
-      localStorage.setItem(
-        'abandon_lists_sorting_format',
-        abandon_lists_sorting_format
-      );
+      localStorage.setItem('abandon_lists_sorting_format', abandon_lists_sorting_format);
     } else {
-      localStorage.setItem(
-        'abandon_lists_sorting_format',
-        this.setting.abandon_lists_sorting_format
-      );
+      localStorage.setItem('abandon_lists_sorting_format', this.setting.abandon_lists_sorting_format);
     }
     if (display_name) {
       this.setting.display_name = display_name;
@@ -345,7 +345,7 @@ export class DashboardComponent {
           '/services/dashboard?network_policy=' +
           environment.environment.network_policy
       )
-      .subscribe((data) => {
+      .subscribe((data: any) => {
         if (data['status'] == 'OK') {
           this.url_mapper = data['data'].api_url;
           let url_api_sse = '';
@@ -353,11 +353,7 @@ export class DashboardComponent {
             url_api_sse = this.url_mapper.api_sse;
             this.branch_id = data['data'].branch_id;
           } else {
-            url_api_sse =
-              environment.environment.url_backend +
-              '/sse/v1/' +
-              this.branch_id +
-              '/event';
+            url_api_sse = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/event';
           }
           this.getBranchName(this.branch_id);
           localStorage.setItem('url_mapper', JSON.stringify(this.url_mapper));
@@ -376,7 +372,7 @@ export class DashboardComponent {
           this.initDashboard();
           this.checkDurationSync();
         } else {
-          this.router.navigate(['/pages/miscellaneous/403', { system: 'CIS' }]);
+          // this.router.navigate(['/pages/miscellaneous/403', { system: 'CIS' }]);
         }
       });
   }
@@ -386,21 +382,15 @@ export class DashboardComponent {
     if (this.url_mode == 'mapper') {
       url_api_status = this.url_mapper.api_status;
     } else {
-      url_api_status =
-        environment.environment.url_backend +
-        '/sse/v1/' +
-        this.branch_id +
-        '/status';
+      url_api_status = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/status';
     }
-    this._d1669Service
-      .getSIPStatus(url_api_status + '/' + this.setting.chart_format)
-      .subscribe((data) => {
-        if (data['status'] == 'OK') {
-          this.globalService.sip_status = data['data']['status'];
-        } else {
-          this.globalService.sip_status = 'N/A';
-        }
-      });
+    this._d1669Service.getSIPStatus(url_api_status + '/' + this.setting.chart_format).subscribe((data: any) => {
+      if (data['status'] == 'OK') {
+        this.globalService.sip_status = data['data']['status'];
+      } else {
+        this.globalService.sip_status = 'N/A';
+      }
+    });
   }
 
   fetchAgents() {
@@ -410,21 +400,13 @@ export class DashboardComponent {
       url_api_agent_status = this.url_mapper.api_agent_status;
       url_api_agent = this.url_mapper.api_agent;
     } else {
-      url_api_agent_status =
-        environment.environment.url_backend +
-        '/sse/v1/' +
-        this.branch_id +
-        '/agent';
-      url_api_agent =
-        environment.environment.url_backend +
-        '/user-manage/v1/' +
-        this.branch_id +
-        '/users';
+      url_api_agent_status = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/agent';
+      url_api_agent = environment.environment.url_backend + '/user-manage/v1/' + this.branch_id + '/users';
     }
     this.subscriptions_forkjoin = forkJoin({
-      agent_status: this._d1669Service.getAgentStatus(url_api_agent_status),
+      // agent_status: this._d1669Service.getAgentStatus(url_api_agent_status),
       agent_lists: this._d1669Service.getAgentLists(url_api_agent),
-    }).subscribe(({ agent_status, agent_lists }) => {
+    }).subscribe(({ agent_status, agent_lists }: any) => {
       if (agent_lists['data'] && agent_lists['data'].length > 0) {
         this.agent_lists = agent_lists['data'];
       }
@@ -438,12 +420,8 @@ export class DashboardComponent {
   }
 
   countAgentSystem() {
-    const agent_normal_system = this.agents.filter(
-      (x) => x.agent_type_id <= 5
-    ).length;
-    const agent_backup_system = this.agents.filter(
-      (x) => x.agent_type_id == 8
-    ).length;
+    const agent_normal_system = this.agents.filter((x: any) => x.agent_type_id <= 5).length;
+    const agent_backup_system = this.agents.filter((x: any) => x.agent_type_id === 8).length;
     const data = {
       agent_mode: localStorage.getItem('agent_mode') || 'normal',
       agent_normal: agent_normal_system,
@@ -454,19 +432,16 @@ export class DashboardComponent {
   }
 
   mapDisplayNameAgents() {
-    this.agents.map((item) => {
+    this.agents.map((item: any) => {
       if (item.source == item.destination) {
         // fix for show as Busy
         item.action_at = 0;
       }
 
       if (this.agent_lists.length > 0) {
-        this.agent_lists.map((item_list) => {
+        this.agent_lists.map((item_list: any) => {
           // map display name
-          if (
-            item.agent_username == item_list.username &&
-            item.name == undefined
-          ) {
+          if (item.agent_username == item_list.username && item.name == undefined) {
             item.name = item_list.name;
             item.last_name = item_list.last_name;
           }
@@ -475,427 +450,352 @@ export class DashboardComponent {
     });
   }
 
+  toggleSetting() {
+    // this.dialogService
+    //   .open(SettingDialogComponent, {
+    //     context: {
+    //       title: 'Setting',
+    //     },
+    //   })
+    //   .onClose.subscribe((res) => {
+    //     if (res) {
+    //       this.setting.chart_format = res;
+    //       this.initDashboard();
+    //       this.showToast(this.toastr_status, this.toastr_title, this.toastr_content);
+    //     }
+    //   });
+  }
+
   fetchDataSSE() {
     if (this.subscriptions_sse) {
       this.subscriptions_sse.unsubscribe();
     }
-    this.subscriptions_sse = this.globalService
-      .getDataBust()
-      .subscribe((data) => {
-        let dataAgents = data;
+    this.subscriptions_sse = this.globalService.getDataBust().subscribe((data: any) => {
+      let dataAgents = data;
 
-        // check initial, is a first connection
-        if (dataAgents.title == 'initial') {
-          if (environment.environment.env_mode != 'production')
-            console.log('SSE:', dataAgents.status);
+      // check initial, is a first connection
+      if (dataAgents.title === 'initial') {
+        if (environment.environment.env_mode != 'production') console.log('SSE:', dataAgents.status);
 
-          if (dataAgents.body == null) {
-            this.agents = [];
-          } else {
-            this.agents = dataAgents.body;
-            this.agents = this.agents.map((item) => {
-              if (item.source == item.destination) {
-                // fix for show as Busy
-                item.action_at = 0;
-              }
-              return item;
-            });
-          }
-          this.mapDisplayNameAgents();
-          this.filterAgentByType();
-          this.countAgentSystem();
-          return;
-        }
-
-        // check trigger, support agent login, logout and change position
-        if (dataAgents.title == 'trigger') {
-          if (environment.environment.env_mode != 'production') {
-            console.log('SSE:', dataAgents.title);
-            console.log('Change position');
-            console.log(dataAgents.body);
-          }
-
-          if (dataAgents.body == null) {
-            this.agents = [];
-          } else {
-            this.agents = dataAgents.body;
-            this.agents = this.agents.map((item) => {
-              if (item.source == item.destination) {
-                // fix for show as Busy
-                item.action_at = 0;
-              }
-              return item;
-            });
-          }
-          this.mapDisplayNameAgents();
-          this.filterAgentByType();
-          this.countAgentSystem();
-          return;
-        }
-
-        // check SIP status
-        if (dataAgents.title == 'sip') {
-          if (dataAgents.body['status']) {
-            this.globalService.sip_status = dataAgents.body['status'];
-          } else {
-            this.globalService.sip_status = 'N/A';
-          }
-          return;
-        }
-
-        if (environment.environment.env_mode != 'production')
-          console.log('dataAgents', dataAgents);
-
-        // ******************** Start event without agent ********************
-
-        // if (dataAgents.body.action == "ANSWER") {
-        //   // check for close special line notify
-        //   if (dataAgents.body.source_type == "TTRS") {
-        //     if (this.special_line.s_ttrs.value > 0) {
-        //       this.special_line.s_ttrs.value--
-        //       if (this.special_line.s_ttrs.value < 0) this.special_line.s_ttrs.value = 0
-        //       this.globalService.special_line = JSON.stringify(this.special_line)
-        //     }
-        //   }
-        //   if (dataAgents.body.source_type == "191") {
-        //     if (this.special_line.s_191.value > 0) {
-        //       this.special_line.s_191.value--
-        //       if (this.special_line.s_191.value < 0) this.special_line.s_191.value = 0
-        //       this.globalService.special_line = JSON.stringify(this.special_line)
-        //     }
-        //   }
-        // }
-
-        // manage "Call Taker and Non Emergency Swarm" & "Coordinator and Dispatcher Swarm"
-        if (
-          dataAgents.body.agent_type_id == '6' ||
-          dataAgents.body.agent_type_id == '7'
-        ) {
-          // swarm
-          if (environment.environment.env_mode != 'production')
-            console.log(
-              dataAgents.body.agent_type,
-              dataAgents.body.source_type
-            );
-          if (
-            dataAgents.body.action == 'QUEUE_FULL_ANOTHER' ||
-            dataAgents.body.action == 'RINGING'
-          ) {
-            if (dataAgents.body.source_type == 'Cellular') {
-              this.special_line.s_cellular.value++;
-              this.special_line.s_cellular.type = dataAgents.body.agent_type_id;
-              this.globalService.special_line = JSON.stringify(
-                this.special_line
-              );
-              return;
+        if (dataAgents.body === null) {
+          this.agents = [];
+        } else {
+          this.agents = dataAgents.body;
+          this.agents = this.agents.map((item: any) => {
+            if (item.source == item.destination) {
+              // fix for show as Busy
+              item.action_at = 0;
             }
-            if (dataAgents.body.source_type == 'Data') {
-              this.special_line.s_data.value++;
-              this.special_line.s_data.type = dataAgents.body.agent_type_id;
-              this.globalService.special_line = JSON.stringify(
-                this.special_line
-              );
-              return;
-            }
-            if (dataAgents.body.source_type == 'TTRS') {
-              this.special_line.s_ttrs.value++;
-              this.special_line.s_ttrs.type = dataAgents.body.agent_type_id;
-              this.globalService.special_line = JSON.stringify(
-                this.special_line
-              );
-              return;
-            }
-            if (dataAgents.body.source_type == '191') {
-              this.special_line.s_191.value++;
-              this.special_line.s_191.type = dataAgents.body.agent_type_id;
-              this.globalService.special_line = JSON.stringify(
-                this.special_line
-              );
-              return;
-            }
-            if (dataAgents.body.source_type == 'Operator') {
-              this.special_line.s_operator.value++;
-              this.special_line.s_operator.type = dataAgents.body.agent_type_id;
-              this.globalService.special_line = JSON.stringify(
-                this.special_line
-              );
-              return;
-            }
-          }
-
-          if (
-            [
-              'NO_ANSWER',
-              'ANSWER',
-              'ANSWER_ANOTHER',
-              'QUEUE_FULL_ANOTHER_ABANDON',
-            ].indexOf(dataAgents.body.action) > -1
-          ) {
-            if (dataAgents.body.source_type == 'Cellular') {
-              if (this.special_line.s_cellular.value > 0) {
-                this.special_line.s_cellular.value--;
-                this.special_line.s_cellular.type =
-                  dataAgents.body.agent_type_id;
-                this.globalService.special_line = JSON.stringify(
-                  this.special_line
-                );
-                return;
-              }
-            }
-            if (dataAgents.body.source_type == 'Data') {
-              if (this.special_line.s_data.value > 0) {
-                this.special_line.s_data.value--;
-                this.special_line.s_data.type = dataAgents.body.agent_type_id;
-                this.globalService.special_line = JSON.stringify(
-                  this.special_line
-                );
-                return;
-              }
-            }
-            if (dataAgents.body.source_type == 'TTRS') {
-              if (this.special_line.s_ttrs.value > 0) {
-                this.special_line.s_ttrs.value--;
-                this.special_line.s_ttrs.type = dataAgents.body.agent_type_id;
-                this.globalService.special_line = JSON.stringify(
-                  this.special_line
-                );
-                return;
-              }
-            }
-            if (dataAgents.body.source_type == '191') {
-              if (this.special_line.s_191.value > 0) {
-                this.special_line.s_191.value--;
-                this.special_line.s_191.type = dataAgents.body.agent_type_id;
-                this.globalService.special_line = JSON.stringify(
-                  this.special_line
-                );
-                return;
-              }
-            }
-            if (dataAgents.body.source_type == 'Operator') {
-              if (this.special_line.s_operator.value > 0) {
-                this.special_line.s_operator.value--;
-                this.special_line.s_operator.type =
-                  dataAgents.body.agent_type_id;
-                this.globalService.special_line = JSON.stringify(
-                  this.special_line
-                );
-                return;
-              }
-            }
-          }
-
-          // if (dataAgents.body.action == "QUEUE_FULL_ANOTHER_ABANDON") {
-          //   this.updateStatistic(dataAgents.body)
-          //   if (dataAgents.body.source_type == "TTRS") {
-          //     this.special_line.s_ttrs.value--
-          //     if (this.special_line.s_ttrs.value < 0) this.special_line.s_ttrs.value = 0
-          //     this.globalService.special_line = JSON.stringify(this.special_line)
-          //   }
-          //   if (dataAgents.body.source_type == "191") {
-          //     this.special_line.s_191.value--
-          //     if (this.special_line.s_191.value < 0) this.special_line.s_191.value = 0
-          //     this.globalService.special_line = JSON.stringify(this.special_line)
-          //   }
-          //   return
-          // }
-        }
-
-        if (dataAgents.body.action == 'QUEUE_FULL_ABANDON') {
-          this.updateStatistic(dataAgents.body);
-          return;
-        }
-        // ******************** End event without agent ********************
-
-        // ******************** Start event about agent busy ********************
-        // replace dnd status & switch all busy every this agent
-        if (
-          dataAgents.body.action.includes('DND') ||
-          dataAgents.body.action == 'ANSWER' ||
-          dataAgents.body.action == 'HANGUP' ||
-          dataAgents.body.action == 'ABANDON' ||
-          dataAgents.body.action == 'NO_ANSWER'
-        ) {
-          this.agents.map((item) => {
-            if (item.agent_extension == dataAgents.body.agent_extension)
-              item.action = dataAgents.body.action;
             return item;
           });
         }
-        // ******************** End event about agent busy ********************
+        this.mapDisplayNameAgents();
+        this.filterAgentByType();
+        this.countAgentSystem();
+        return;
+      }
 
-        // ******************** Start event with agent ********************
+      // check trigger, support agent login, logout and change position
+      if (dataAgents.title == 'trigger') {
+        if (environment.environment.env_mode != 'production') {
+          console.log('SSE:', dataAgents.title);
+          console.log('Change position');
+          console.log(dataAgents.body);
+        }
 
-        for (let i = 0; i < this.agents.length; i++) {
-          // This event matches an agent.
-          if (
-            this.agents[i].agent_extension == dataAgents.body.agent_extension &&
-            this.agents[i].agent_type == dataAgents.body.agent_type
-          ) {
-            // this agent receive event about timimg
-            if (
-              dataAgents.body.action == 'RINGING' ||
-              dataAgents.body.action == 'ANSWER' ||
-              dataAgents.body.action == 'TRANSFER_JOIN_CALLING'
-            ) {
-              if (dataAgents.body.source == dataAgents.body.destination) {
-                // fix for show as Busy
-                dataAgents.body.action_at = 0;
-              }
-              // dataAgents.body.source = dataAgents.body.a_number
-              // switch source <=> destination when outbound
-              if (dataAgents.body.bound_type == 'outbound') {
-                let tmp = dataAgents.body.source;
-                dataAgents.body.source = dataAgents.body.a_number;
-                dataAgents.body.destination = tmp;
-              }
-              // repeace data to this agent
-              this.agents[i] = dataAgents.body;
-              if (dataAgents.body.action == 'TRANSFER_JOIN_CALLING') {
-                // Continuous timing
-                let tmp_action_at = this.agents[i].action_at;
-                this.agents[i] = dataAgents.body;
-                this.agents[i].action_at = tmp_action_at;
-                break;
-              }
-              if (dataAgents.body.action == 'RINGING') {
-                // update statistic only inbound
-                if (dataAgents.body.bound_type == 'inbound') {
-                  this.updateStatistic(dataAgents.body);
-                }
-                break;
-              }
-              if (dataAgents.body.action == 'ANSWER') {
-                // update statistic only inbound
-                if (dataAgents.body.bound_type == 'inbound') {
-                  this.updateStatistic(dataAgents.body);
-                }
-                // check for close special line notify
-                if (dataAgents.body.source_type == 'TTRS') {
-                  if (this.special_line.s_ttrs.value > 0) {
-                    this.special_line.s_ttrs.value--;
-                    if (this.special_line.s_ttrs.value < 0)
-                      this.special_line.s_ttrs.value = 0;
-                    this.globalService.special_line = JSON.stringify(
-                      this.special_line
-                    );
-                  }
-                }
-                if (dataAgents.body.source_type == '191') {
-                  if (this.special_line.s_191.value > 0) {
-                    this.special_line.s_191.value--;
-                    if (this.special_line.s_191.value < 0)
-                      this.special_line.s_191.value = 0;
-                    this.globalService.special_line = JSON.stringify(
-                      this.special_line
-                    );
-                  }
-                }
-                break;
-              }
+        if (dataAgents.body == null) {
+          this.agents = [];
+        } else {
+          this.agents = dataAgents.body;
+          this.agents = this.agents.map((item: any) => {
+            if (item.source == item.destination) {
+              // fix for show as Busy
+              item.action_at = 0;
             }
+            return item;
+          });
+        }
+        this.mapDisplayNameAgents();
+        this.filterAgentByType();
+        this.countAgentSystem();
+        return;
+      }
 
-            // this agent is end conversation
-            if (
-              dataAgents.body.action == 'HANGUP' ||
-              dataAgents.body.action == 'ABANDON' ||
-              dataAgents.body.action == 'NO_ANSWER' ||
-              dataAgents.body.action == 'CANCEL_TRANSFER'
-            ) {
-              this.agents[i] = dataAgents.body;
-              if (environment.environment.env_mode != 'production')
-                console.log('End conversation', dataAgents.body.action);
-              this.updateStatistic(dataAgents.body);
-              this.agents[i].action = 'DND_OFF';
-              break;
+      // check SIP status
+      if (dataAgents.title == 'sip') {
+        if (dataAgents.body['status']) {
+          this.globalService.sip_status = dataAgents.body['status'];
+        } else {
+          this.globalService.sip_status = 'N/A';
+        }
+        return;
+      }
+
+      if (environment.environment.env_mode != 'production') console.log('dataAgents', dataAgents);
+
+      // ******************** Start event without agent ********************
+
+      // if (dataAgents.body.action == "ANSWER") {
+      //   // check for close special line notify
+      //   if (dataAgents.body.source_type == "TTRS") {
+      //     if (this.special_line.s_ttrs.value > 0) {
+      //       this.special_line.s_ttrs.value--
+      //       if (this.special_line.s_ttrs.value < 0) this.special_line.s_ttrs.value = 0
+      //       this.globalService.special_line = JSON.stringify(this.special_line)
+      //     }
+      //   }
+      //   if (dataAgents.body.source_type == "191") {
+      //     if (this.special_line.s_191.value > 0) {
+      //       this.special_line.s_191.value--
+      //       if (this.special_line.s_191.value < 0) this.special_line.s_191.value = 0
+      //       this.globalService.special_line = JSON.stringify(this.special_line)
+      //     }
+      //   }
+      // }
+
+      // manage "Call Taker and Non Emergency Swarm" & "Coordinator and Dispatcher Swarm"
+      if (dataAgents.body.agent_type_id == '6' || dataAgents.body.agent_type_id == '7') {
+        // swarm
+        if (environment.environment.env_mode != 'production') console.log(dataAgents.body.agent_type, dataAgents.body.source_type);
+        if (dataAgents.body.action == 'QUEUE_FULL_ANOTHER' || dataAgents.body.action == 'RINGING') {
+          if (dataAgents.body.source_type == 'Cellular') {
+            this.special_line.s_cellular.value++;
+            this.special_line.s_cellular.type = dataAgents.body.agent_type_id;
+            this.globalService.special_line = JSON.stringify(this.special_line);
+            return;
+          }
+          if (dataAgents.body.source_type == 'Data') {
+            this.special_line.s_data.value++;
+            this.special_line.s_data.type = dataAgents.body.agent_type_id;
+            this.globalService.special_line = JSON.stringify(this.special_line);
+            return;
+          }
+          if (dataAgents.body.source_type == 'TTRS') {
+            this.special_line.s_ttrs.value++;
+            this.special_line.s_ttrs.type = dataAgents.body.agent_type_id;
+            this.globalService.special_line = JSON.stringify(this.special_line);
+            return;
+          }
+          if (dataAgents.body.source_type == '191') {
+            this.special_line.s_191.value++;
+            this.special_line.s_191.type = dataAgents.body.agent_type_id;
+            this.globalService.special_line = JSON.stringify(this.special_line);
+            return;
+          }
+          if (dataAgents.body.source_type == 'Operator') {
+            this.special_line.s_operator.value++;
+            this.special_line.s_operator.type = dataAgents.body.agent_type_id;
+            this.globalService.special_line = JSON.stringify(this.special_line);
+            return;
+          }
+        }
+
+        if (['NO_ANSWER', 'ANSWER', 'ANSWER_ANOTHER', 'QUEUE_FULL_ANOTHER_ABANDON'].indexOf(dataAgents.body.action) > -1) {
+          if (dataAgents.body.source_type == 'Cellular') {
+            if (this.special_line.s_cellular.value > 0) {
+              this.special_line.s_cellular.value--;
+              this.special_line.s_cellular.type = dataAgents.body.agent_type_id;
+              this.globalService.special_line = JSON.stringify(this.special_line);
+              return;
             }
-
-            // this agent is transfer
-            if (
-              dataAgents.body.action == 'TRANSFER' &&
-              dataAgents.body.action_by == this.agents[i].agent_extension
-            ) {
-              console.log(
-                'agent ' +
-                  this.agents[i].agent_extension +
-                  ' (' +
-                  this.agents[i].agent_type +
-                  ') is transfered'
-              );
-              // Continuous timing & keep source
-              let tmp_action_at = this.agents[i].action_at;
-              let tmp_source_type = this.agents[i].source_type;
-              this.agents[i] = dataAgents.body;
-              this.agents[i].action_at = tmp_action_at;
-              this.agents[i].source_type = tmp_source_type;
-              this.agents[i].source = this.agents[i].a_number;
-              break;
+          }
+          if (dataAgents.body.source_type == 'Data') {
+            if (this.special_line.s_data.value > 0) {
+              this.special_line.s_data.value--;
+              this.special_line.s_data.type = dataAgents.body.agent_type_id;
+              this.globalService.special_line = JSON.stringify(this.special_line);
+              return;
             }
-
-            // this agent is transfer
-            if (dataAgents.body.action == 'LOST_TRANSFER') {
-              console.log(
-                'agent ' +
-                  this.agents[i].agent_extension +
-                  ' (' +
-                  this.agents[i].agent_type +
-                  ') is lost transfered'
-              );
-              // Continuous timing & keep source
-              let tmp_action_at = this.agents[i].action_at;
-              let tmp_source_type = this.agents[i].source_type;
-              this.agents[i] = dataAgents.body;
-              this.agents[i].action_at = tmp_action_at;
-              this.agents[i].source_type = tmp_source_type;
-              this.agents[i].source = this.agents[i].a_number;
-              break;
+          }
+          if (dataAgents.body.source_type == 'TTRS') {
+            if (this.special_line.s_ttrs.value > 0) {
+              this.special_line.s_ttrs.value--;
+              this.special_line.s_ttrs.type = dataAgents.body.agent_type_id;
+              this.globalService.special_line = JSON.stringify(this.special_line);
+              return;
             }
+          }
+          if (dataAgents.body.source_type == '191') {
+            if (this.special_line.s_191.value > 0) {
+              this.special_line.s_191.value--;
+              this.special_line.s_191.type = dataAgents.body.agent_type_id;
+              this.globalService.special_line = JSON.stringify(this.special_line);
+              return;
+            }
+          }
+          if (dataAgents.body.source_type == 'Operator') {
+            if (this.special_line.s_operator.value > 0) {
+              this.special_line.s_operator.value--;
+              this.special_line.s_operator.type = dataAgents.body.agent_type_id;
+              this.globalService.special_line = JSON.stringify(this.special_line);
+              return;
+            }
+          }
+        }
 
-            // this agent join conference
-            if (
-              dataAgents.body.action == 'JOIN_CONFERENCE' &&
-              dataAgents.body.action_by == this.agents[i].agent_extension
-            ) {
-              if (environment.environment.env_mode != 'production')
-                console.log(
-                  'agent ' +
-                    this.agents[i].agent_extension +
-                    ' (' +
-                    this.agents[i].agent_type +
-                    ') joined conference'
-                );
+        // if (dataAgents.body.action == "QUEUE_FULL_ANOTHER_ABANDON") {
+        //   this.updateStatistic(dataAgents.body)
+        //   if (dataAgents.body.source_type == "TTRS") {
+        //     this.special_line.s_ttrs.value--
+        //     if (this.special_line.s_ttrs.value < 0) this.special_line.s_ttrs.value = 0
+        //     this.globalService.special_line = JSON.stringify(this.special_line)
+        //   }
+        //   if (dataAgents.body.source_type == "191") {
+        //     this.special_line.s_191.value--
+        //     if (this.special_line.s_191.value < 0) this.special_line.s_191.value = 0
+        //     this.globalService.special_line = JSON.stringify(this.special_line)
+        //   }
+        //   return
+        // }
+      }
+
+      if (dataAgents.body.action === 'QUEUE_FULL_ABANDON') {
+        this.updateStatistic(dataAgents.body);
+        return;
+      }
+      // ******************** End event without agent ********************
+
+      // ******************** Start event about agent busy ********************
+      // replace dnd status & switch all busy every this agent
+      if (
+        dataAgents.body.action.includes('DND') ||
+        dataAgents.body.action === 'ANSWER' ||
+        dataAgents.body.action === 'HANGUP' ||
+        dataAgents.body.action === 'ABANDON' ||
+        dataAgents.body.action === 'NO_ANSWER'
+      ) {
+        this.agents.map((item: any) => {
+          if (item.agent_extension == dataAgents.body.agent_extension) item.action = dataAgents.body.action;
+          return item;
+        });
+      }
+      // ******************** End event about agent busy ********************
+
+      // ******************** Start event with agent ********************
+
+      for (let i = 0; i < this.agents.length; i++) {
+        // This event matches an agent.
+        if (this.agents[i].agent_extension == dataAgents.body.agent_extension && this.agents[i].agent_type == dataAgents.body.agent_type) {
+          // this agent receive event about timimg
+          if (dataAgents.body.action == 'RINGING' || dataAgents.body.action == 'ANSWER' || dataAgents.body.action == 'TRANSFER_JOIN_CALLING') {
+            if (dataAgents.body.source == dataAgents.body.destination) {
+              // fix for show as Busy
+              dataAgents.body.action_at = 0;
+            }
+            // dataAgents.body.source = dataAgents.body.a_number
+            // switch source <=> destination when outbound
+            if (dataAgents.body.bound_type == 'outbound') {
+              let tmp = dataAgents.body.source;
+              dataAgents.body.source = dataAgents.body.a_number;
+              dataAgents.body.destination = tmp;
+            }
+            // repeace data to this agent
+            this.agents[i] = dataAgents.body;
+            if (dataAgents.body.action == 'TRANSFER_JOIN_CALLING') {
               // Continuous timing
               let tmp_action_at = this.agents[i].action_at;
               this.agents[i] = dataAgents.body;
               this.agents[i].action_at = tmp_action_at;
-              this.agents[i].source = this.agents[i].a_number;
-              if (environment.environment.env_mode != 'production')
-                console.log('action_at', this.agents[i].action_at);
               break;
             }
-
-            // this agent leave conference
-            if (
-              dataAgents.body.action == 'LEAVE_CONFERENCE' &&
-              dataAgents.body.action_by === this.agents[i].agent_extension
-            ) {
-              if (environment.environment.env_mode != 'production')
-                console.log(
-                  'agent ' +
-                    this.agents[i].agent_extension +
-                    '  leaved conference'
-                );
-              this.agents[i] = dataAgents.body;
-              this.agents[i].action = 'DND_OFF';
-              this.agents[i].source = this.agents[i].a_number;
+            if (dataAgents.body.action == 'RINGING') {
+              // update statistic only inbound
+              if (dataAgents.body.bound_type == 'inbound') {
+                this.updateStatistic(dataAgents.body);
+              }
+              break;
+            }
+            if (dataAgents.body.action == 'ANSWER') {
+              // update statistic only inbound
+              if (dataAgents.body.bound_type == 'inbound') {
+                this.updateStatistic(dataAgents.body);
+              }
+              // check for close special line notify
+              if (dataAgents.body.source_type == 'TTRS') {
+                if (this.special_line.s_ttrs.value > 0) {
+                  this.special_line.s_ttrs.value--;
+                  if (this.special_line.s_ttrs.value < 0) this.special_line.s_ttrs.value = 0;
+                  this.globalService.special_line = JSON.stringify(this.special_line);
+                }
+              }
+              if (dataAgents.body.source_type == '191') {
+                if (this.special_line.s_191.value > 0) {
+                  this.special_line.s_191.value--;
+                  if (this.special_line.s_191.value < 0) this.special_line.s_191.value = 0;
+                  this.globalService.special_line = JSON.stringify(this.special_line);
+                }
+              }
               break;
             }
           }
+
+          // this agent is end conversation
+          if (
+            dataAgents.body.action == 'HANGUP' ||
+            dataAgents.body.action == 'ABANDON' ||
+            dataAgents.body.action == 'NO_ANSWER' ||
+            dataAgents.body.action == 'CANCEL_TRANSFER'
+          ) {
+            this.agents[i] = dataAgents.body;
+            if (environment.environment.env_mode != 'production') console.log('End conversation', dataAgents.body.action);
+            this.updateStatistic(dataAgents.body);
+            this.agents[i].action = 'DND_OFF';
+            break;
+          }
+
+          // this agent is transfer
+          if (dataAgents.body.action == 'TRANSFER' && dataAgents.body.action_by == this.agents[i].agent_extension) {
+            console.log('agent ' + this.agents[i].agent_extension + ' (' + this.agents[i].agent_type + ') is transfered');
+            // Continuous timing & keep source
+            let tmp_action_at = this.agents[i].action_at;
+            let tmp_source_type = this.agents[i].source_type;
+            this.agents[i] = dataAgents.body;
+            this.agents[i].action_at = tmp_action_at;
+            this.agents[i].source_type = tmp_source_type;
+            this.agents[i].source = this.agents[i].a_number;
+            break;
+          }
+
+          // this agent is transfer
+          if (dataAgents.body.action == 'LOST_TRANSFER') {
+            console.log('agent ' + this.agents[i].agent_extension + ' (' + this.agents[i].agent_type + ') is lost transfered');
+            // Continuous timing & keep source
+            let tmp_action_at = this.agents[i].action_at;
+            let tmp_source_type = this.agents[i].source_type;
+            this.agents[i] = dataAgents.body;
+            this.agents[i].action_at = tmp_action_at;
+            this.agents[i].source_type = tmp_source_type;
+            this.agents[i].source = this.agents[i].a_number;
+            break;
+          }
+
+          // this agent join conference
+          if (dataAgents.body.action == 'JOIN_CONFERENCE' && dataAgents.body.action_by == this.agents[i].agent_extension) {
+            if (environment.environment.env_mode != 'production')
+              console.log('agent ' + this.agents[i].agent_extension + ' (' + this.agents[i].agent_type + ') joined conference');
+            // Continuous timing
+            let tmp_action_at = this.agents[i].action_at;
+            this.agents[i] = dataAgents.body;
+            this.agents[i].action_at = tmp_action_at;
+            this.agents[i].source = this.agents[i].a_number;
+            if (environment.environment.env_mode != 'production') console.log('action_at', this.agents[i].action_at);
+            break;
+          }
+
+          // this agent leave conference
+          if (dataAgents.body.action == 'LEAVE_CONFERENCE' && dataAgents.body.action_by === this.agents[i].agent_extension) {
+            if (environment.environment.env_mode != 'production') console.log('agent ' + this.agents[i].agent_extension + '  leaved conference');
+            this.agents[i] = dataAgents.body;
+            this.agents[i].action = 'DND_OFF';
+            this.agents[i].source = this.agents[i].a_number;
+            break;
+          }
         }
-        // ******************** End event with agent ********************
-        this.mapDisplayNameAgents();
-        this.filterAgentByType();
-      });
+      }
+      // ******************** End event with agent ********************
+      this.mapDisplayNameAgents();
+      this.filterAgentByType();
+    });
   }
 
   manageEventOfAgent() {}
@@ -909,8 +809,7 @@ export class DashboardComponent {
       }
 
       if (isNaN(period())) {
-        if (environment.environment.env_mode != 'production')
-          console.log('updated');
+        if (environment.environment.env_mode != 'production') console.log('updated');
         this.globalService.duration_sync = '5';
       } else {
         this.initSetting();
@@ -918,9 +817,7 @@ export class DashboardComponent {
 
         if (this.subscriptions_sync) this.subscriptions_sync.unsubscribe();
 
-        this.subscriptions_sync = interval(
-          parseInt(nextValue) * 1000 * 60
-        ).subscribe((val) => {
+        this.subscriptions_sync = interval(parseInt(nextValue) * 1000 * 60).subscribe((val) => {
           this.fetchAPIs();
           this.globalService.duration_sync = nextValue;
         });
@@ -949,9 +846,7 @@ export class DashboardComponent {
         if (this.special_line_ttrs) this.special_line_ttrs.close();
         this.showToastCall(
           this.noti_specail_line.s_ttrs.type == '6' ? 'warning' : 'danger',
-          'Incoming call from TTRS (' +
-            this.noti_specail_line.s_ttrs.value +
-            ')',
+          'Incoming call from TTRS (' + this.noti_specail_line.s_ttrs.value + ')',
           '',
           'TTRS'
         );
@@ -975,9 +870,7 @@ export class DashboardComponent {
         if (this.special_line_cellular) this.special_line_cellular.close();
         this.showToastCall(
           this.noti_specail_line.s_cellular.type == '6' ? 'warning' : 'danger',
-          'Incoming call from Cellular (' +
-            this.noti_specail_line.s_cellular.value +
-            ')',
+          'Incoming call from Cellular (' + this.noti_specail_line.s_cellular.value + ')',
           '',
           'Cellular'
         );
@@ -989,9 +882,7 @@ export class DashboardComponent {
         if (this.special_line_data) this.special_line_data.close();
         this.showToastCall(
           this.noti_specail_line.s_data.type == '6' ? 'warning' : 'danger',
-          'Incoming call from Data (' +
-            this.noti_specail_line.s_data.value +
-            ')',
+          'Incoming call from Data (' + this.noti_specail_line.s_data.value + ')',
           '',
           'Data'
         );
@@ -1003,9 +894,7 @@ export class DashboardComponent {
         if (this.special_line_operator) this.special_line_operator.close();
         this.showToastCall(
           this.noti_specail_line.s_operator.type == '6' ? 'warning' : 'danger',
-          'Incoming call from Operator (' +
-            this.noti_specail_line.s_operator.value +
-            ')',
+          'Incoming call from Operator (' + this.noti_specail_line.s_operator.value + ')',
           '',
           'Operator'
         );
@@ -1017,22 +906,12 @@ export class DashboardComponent {
   }
 
   filterAgentByType() {
-    this.agents_call_taker = this.agents.filter(
-      (x) => x.agent_type == 'Call Taker'
-    );
-    this.agents_dispatcher = this.agents.filter(
-      (x) => x.agent_type == 'Dispatcher'
-    );
-    this.agents_supervisor = this.agents.filter(
-      (x) => x.agent_type == 'Supervisor'
-    );
-    this.agents_coordinator = this.agents.filter(
-      (x) => x.agent_type == 'Coordinator'
-    );
-    this.agents_non_emergency = this.agents.filter(
-      (x) => x.agent_type == 'Non Emergency'
-    );
-    this.agents_backup = this.agents.filter((x) => x.agent_type == 'Tablet');
+    this.agents_call_taker = this.agents.filter((x: any) => x.agent_type == 'Call Taker');
+    this.agents_dispatcher = this.agents.filter((x: any) => x.agent_type == 'Dispatcher');
+    this.agents_supervisor = this.agents.filter((x: any) => x.agent_type == 'Supervisor');
+    this.agents_coordinator = this.agents.filter((x: any) => x.agent_type == 'Coordinator');
+    this.agents_non_emergency = this.agents.filter((x: any) => x.agent_type == 'Non Emergency');
+    this.agents_backup = this.agents.filter((x: any) => x.agent_type == 'Tablet');
   }
 
   fetchConversationSummary() {
@@ -1040,40 +919,34 @@ export class DashboardComponent {
     if (this.url_mode == 'mapper') {
       url_api_summary = this.url_mapper.api_summary;
     } else {
-      url_api_summary =
-        environment.environment.url_backend +
-        '/sse/v1/' +
-        this.branch_id +
-        '/summary';
+      url_api_summary = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/summary';
     }
-    this._d1669Service
-      .getConversationChart(url_api_summary + '/' + this.setting.chart_format)
-      .subscribe((data) => {
-        if (data['status'] == 'OK') {
-          // summary
-          // assign value
-          this.conversation_amount = this.conversation_amount.map((x) => {
-            if (x.id in data['data'].summary) {
-              x.value = data['data'].summary[x.id];
-              return x;
-            }
-          });
-          this.conversation_time = this.conversation_time.map((x) => {
-            if (x.id in data['data'].summary) {
-              x.value = this.secToTime(data['data'].summary[x.id]);
-              return x;
-            }
-          });
-          this.conversations_amount = this.conversation_amount;
-          this.conversations_time = this.conversation_time;
-
-          // chart
-          if (this.data_chart !== data['data'].detail) {
-            this.data_chart = data['data'].detail;
-            this.globalService.setChartData(JSON.stringify(this.data_chart));
+    this._d1669Service.getConversationChart(url_api_summary + '/' + this.setting.chart_format).subscribe((data: any) => {
+      if (data['status'] == 'OK') {
+        // summary
+        // assign value
+        this.conversation_amount = this.conversation_amount.map((x: any) => {
+          if (x.id in data['data'].summary) {
+            x.value = data['data'].summary[x.id];
+            return x;
           }
+        });
+        this.conversation_time = this.conversation_time.map((x: any) => {
+          if (x.id in data['data'].summary) {
+            x.value = this.secToTime(data['data'].summary[x.id]);
+            return x;
+          }
+        });
+        this.conversations_amount = this.conversation_amount;
+        this.conversations_time = this.conversation_time;
+
+        // chart
+        if (this.data_chart !== data['data'].detail) {
+          this.data_chart = data['data'].detail;
+          this.globalService.setChartData(JSON.stringify(this.data_chart));
         }
-      });
+      }
+    });
   }
 
   fetchAbandonLists() {
@@ -1081,26 +954,20 @@ export class DashboardComponent {
     if (this.url_mode == 'mapper') {
       url_api_abandonlist = this.url_mapper.api_abandonlist;
     } else {
-      url_api_abandonlist =
-        environment.environment.url_backend +
-        '/sse/v1/' +
-        this.branch_id +
-        '/abandon';
+      url_api_abandonlist = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/abandon';
     }
-    this._d1669Service
-      .getAbandonLists(url_api_abandonlist + '/' + this.setting.chart_format)
-      .subscribe((data) => {
-        if (data['data']) {
-          this.abandon_lists = data['data'];
-          this.abandon_lists = this.sortAbandon(this.abandon_lists);
-          this.abandon_lists = this.abandon_lists.slice(0, 8);
-        } else {
-          this.abandon_lists = [];
-        }
-      });
+    this._d1669Service.getAbandonLists(url_api_abandonlist + '/' + this.setting.chart_format).subscribe((data: any) => {
+      if (data['data']) {
+        this.abandon_lists = data['data'];
+        this.abandon_lists = this.sortAbandon(this.abandon_lists);
+        this.abandon_lists = this.abandon_lists.slice(0, 8);
+      } else {
+        this.abandon_lists = [];
+      }
+    });
   }
 
-  sortAbandon(abandon_lists) {
+  sortAbandon(abandon_lists: any) {
     if (localStorage.getItem('abandon_lists_sorting_format') == 'count') {
       abandon_lists = abandon_lists.sort(this.sortAbandonByCount);
     } else {
@@ -1109,32 +976,32 @@ export class DashboardComponent {
     return abandon_lists;
   }
 
-  sortAbandonByCount(x, y) {
-    var n = y.amount - x.amount;
-    if (n != 0) {
+  sortAbandonByCount(x: any, y: any) {
+    const n = y.amount - x.amount;
+    if (n !== 0) {
       return n;
     }
     return y.lastest_at - x.lastest_at;
   }
 
-  sortAbandonByTime(x, y) {
-    var n = y.lastest_at - x.lastest_at;
-    if (n != 0) {
+  sortAbandonByTime(x: any, y: any) {
+    const n = y.lastest_at - x.lastest_at;
+    if (n !== 0) {
       return n;
     }
     return y.amount - x.amount;
   }
 
   fetchUserMapper() {
-    this.user = this.auth.getIdentityClaims();
+    this.user = this.auth.identityClaims;
   }
 
-  secToTime(sec) {
-    var sec_num = parseInt(sec, 10); // don't forget the second param
-    var hours = Math.floor(sec_num / 3600);
-    var minutes = Math.floor((sec_num - hours * 3600) / 60);
-    var seconds = sec_num - hours * 3600 - minutes * 60;
-    var tmp_hours, tmp_minutes, tmp_seconds;
+  secToTime(sec: any) {
+    let sec_num = parseInt(sec, 10); // don't forget the second param
+    let hours = Math.floor(sec_num / 3600);
+    let minutes = Math.floor((sec_num - hours * 3600) / 60);
+    let seconds = sec_num - hours * 3600 - minutes * 60;
+    let tmp_hours, tmp_minutes, tmp_seconds;
 
     if (hours < 10) {
       tmp_hours = '0' + hours;
@@ -1153,21 +1020,6 @@ export class DashboardComponent {
     timer(delay, 1000).subscribe((x) => {
       this.dashboard_datetime = new Date();
     });
-  }
-
-  sortStatus(array, order, key) {
-    array.sort(function (a, b) {
-      var A = a[key],
-        B = b[key];
-
-      if (order.indexOf(A) > order.indexOf(B)) {
-        return 1;
-      }
-      if (order.indexOf(A) < order.indexOf(B)) {
-        return -1;
-      }
-    });
-    return array;
   }
 
   checkCallStatus() {
@@ -1195,55 +1047,46 @@ export class DashboardComponent {
     });
   }
 
-  setDisplayCallTime(agent, index, calltime_type) {
+  setDisplayCallTime(agent: any, index: any, calltime_type: any) {
     if (
-      agent.action == 'ANSWER' ||
-      agent.action == 'RINGING' ||
-      agent.action == 'TRANSFER' ||
-      agent.action == 'LOST_TRANSFER' ||
+      agent.action === 'ANSWER' ||
+      agent.action === 'RINGING' ||
+      agent.action === 'TRANSFER' ||
+      agent.action === 'LOST_TRANSFER' ||
       (agent.action && agent.action.includes('CONFERENCE')) ||
-      agent.action == 'TRANSFER_JOIN_CALLING'
+      agent.action === 'TRANSFER_JOIN_CALLING'
     ) {
-      if (agent.action_at == 0) {
-        if (calltime_type == 'CT') this.display_calltime_call_taker[index] = '';
-        if (calltime_type == 'NE')
-          this.display_calltime_non_emergency[index] = '';
-        if (calltime_type == 'CO')
-          this.display_calltime_coordinator[index] = '';
-        if (calltime_type == 'DP') this.display_calltime_dispatcher[index] = '';
-        if (calltime_type == 'SU') this.display_calltime_supervisor[index] = '';
-        if (calltime_type == 'Backup') this.display_calltime_backup[index] = '';
+      if (agent.action_at === 0) {
+        if (calltime_type === 'CT') this.display_calltime_call_taker[index] = '';
+        if (calltime_type === 'NE') this.display_calltime_non_emergency[index] = '';
+        if (calltime_type === 'CO') this.display_calltime_coordinator[index] = '';
+        if (calltime_type === 'DP') this.display_calltime_dispatcher[index] = '';
+        if (calltime_type === 'SU') this.display_calltime_supervisor[index] = '';
+        if (calltime_type === 'Backup') this.display_calltime_backup[index] = '';
       } else {
         const counter = new Date(0, 0, 0, 0, 0, 0);
         const start_time = agent.action_at;
         let talk_time = Math.floor(Date.now() / 1000 - start_time);
         if (talk_time < 0) talk_time = 0;
         counter.setSeconds(talk_time);
-        if (calltime_type == 'CT')
-          this.display_calltime_call_taker[index] = counter;
-        if (calltime_type == 'NE')
-          this.display_calltime_non_emergency[index] = counter;
-        if (calltime_type == 'CO')
-          this.display_calltime_coordinator[index] = counter;
-        if (calltime_type == 'DP')
-          this.display_calltime_dispatcher[index] = counter;
-        if (calltime_type == 'SU')
-          this.display_calltime_supervisor[index] = counter;
-        if (calltime_type == 'Backup')
-          this.display_calltime_backup[index] = counter;
+        if (calltime_type == 'CT') this.display_calltime_call_taker[index] = counter;
+        if (calltime_type == 'NE') this.display_calltime_non_emergency[index] = counter;
+        if (calltime_type == 'CO') this.display_calltime_coordinator[index] = counter;
+        if (calltime_type == 'DP') this.display_calltime_dispatcher[index] = counter;
+        if (calltime_type == 'SU') this.display_calltime_supervisor[index] = counter;
+        if (calltime_type == 'Backup') this.display_calltime_backup[index] = counter;
       }
     } else {
-      if (calltime_type == 'CT') this.display_calltime_call_taker[index] = '';
-      if (calltime_type == 'NE')
-        this.display_calltime_non_emergency[index] = '';
-      if (calltime_type == 'CO') this.display_calltime_coordinator[index] = '';
-      if (calltime_type == 'DP') this.display_calltime_dispatcher[index] = '';
-      if (calltime_type == 'SU') this.display_calltime_supervisor[index] = '';
-      if (calltime_type == 'Backup') this.display_calltime_backup[index] = '';
+      if (calltime_type === 'CT') this.display_calltime_call_taker[index] = '';
+      if (calltime_type === 'NE') this.display_calltime_non_emergency[index] = '';
+      if (calltime_type === 'CO') this.display_calltime_coordinator[index] = '';
+      if (calltime_type === 'DP') this.display_calltime_dispatcher[index] = '';
+      if (calltime_type === 'SU') this.display_calltime_supervisor[index] = '';
+      if (calltime_type === 'Backup') this.display_calltime_backup[index] = '';
     }
   }
 
-  updateStatistic(data) {
+  updateStatistic(data: any) {
     // update statistic once
     let action = data.action;
     // check summary_id
@@ -1255,10 +1098,11 @@ export class DashboardComponent {
     if (environment.environment.env_mode != 'production') console.log(action);
     if (action == 'RINGING') {
       // update summary
-      this.conversations_amount.map((x) => {
+      this.conversations_amount.map((x: any) => {
         if (x.id == 'incoming') {
           return x.value++;
         }
+        return;
       });
       // update chart
       this.data_chart['incoming'][this.data_chart['incoming'].length - 1]++;
@@ -1266,32 +1110,28 @@ export class DashboardComponent {
     }
     if (action == 'ANSWER') {
       // update summary
-      this.conversations_amount.map((x) => {
+      this.conversations_amount.map((x: any) => {
         if (x.id == 'answer') {
           return x.value++;
         }
+        return;
       });
       // update chart
       this.data_chart['answer'][this.data_chart['answer'].length - 1]++;
       this.globalService.setChartData(JSON.stringify(this.data_chart));
     }
-    if (
-      action == 'ABANDON' ||
-      action == 'QUEUE_FULL_ABANDON' ||
-      action == 'QUEUE_FULL_ANOTHER_ABANDON'
-    ) {
+    if (action == 'ABANDON' || action == 'QUEUE_FULL_ABANDON' || action == 'QUEUE_FULL_ANOTHER_ABANDON') {
       // update summary
-      this.conversations_amount.map((x) => {
+      this.conversations_amount.map((x: any) => {
         if (x.id == 'abandon') {
           return x.value++;
         }
+        return;
       });
       // update abandon lists
-      let has_abandon_list = this.abandon_lists.filter(
-        (item) => item.source == data.source
-      );
+      let has_abandon_list = this.abandon_lists.filter((item: any) => item.source == data.source);
       if (has_abandon_list.length > 0) {
-        this.abandon_lists.map((item) => {
+        this.abandon_lists.map((item: any) => {
           if (data.source == item.source) {
             item.amount++;
             item.lastest_at = Math.floor(Date.now() / 1000);
@@ -1312,42 +1152,12 @@ export class DashboardComponent {
       // update chart
       this.data_chart['abandon'][this.data_chart['abandon'].length - 1]++;
       this.globalService.setChartData(JSON.stringify(this.data_chart));
-      if (environment.environment.env_mode != 'production')
-        console.log('summary updated');
+      if (environment.environment.env_mode != 'production') console.log('summary updated');
     }
   }
 
-  fullscreen() {
-    let elem = document.getElementById('fullscreen');
-    if (screenfull.isEnabled) {
-      screenfull.request(elem);
-    }
-  }
-
-  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(
-    event: KeyboardEvent
-  ) {
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
     this.is_fullscreen = false;
-  }
-
-  toggleSetting() {
-    this.dialogService
-      .open(SettingDialogComponent, {
-        context: {
-          title: 'Setting',
-        },
-      })
-      .onClose.subscribe((res) => {
-        if (res) {
-          this.setting.chart_format = res;
-          this.initDashboard();
-          this.showToast(
-            this.toastr_status,
-            this.toastr_title,
-            this.toastr_content
-          );
-        }
-      });
   }
 
   private showToast(type: NbComponentStatus, title: string, body: string) {
@@ -1363,12 +1173,7 @@ export class DashboardComponent {
     this.toastrService.show(body, `${titleContent}`, config);
   }
 
-  private showToastCall(
-    type: NbComponentStatus,
-    title: string,
-    body: string,
-    special_line
-  ) {
+  private showToastCall(type: NbComponentStatus, title: string, body: string, special_line: any) {
     const config = {
       status: type,
       hasIcon: this.toastr_hasIcon,
@@ -1381,39 +1186,19 @@ export class DashboardComponent {
     };
     const titleContent = title ? `${title}` : '';
     if (special_line == 'TTRS') {
-      this.special_line_ttrs = this.toastrService.show(
-        body,
-        `${titleContent}`,
-        config
-      );
+      this.special_line_ttrs = this.toastrService.show(body, `${titleContent}`, config);
     }
     if (special_line == '191') {
-      this.special_line_191 = this.toastrService.show(
-        body,
-        `${titleContent}`,
-        config
-      );
+      this.special_line_191 = this.toastrService.show(body, `${titleContent}`, config);
     }
     if (special_line == 'Cellular') {
-      this.special_line_cellular = this.toastrService.show(
-        body,
-        `${titleContent}`,
-        config
-      );
+      this.special_line_cellular = this.toastrService.show(body, `${titleContent}`, config);
     }
     if (special_line == 'Data') {
-      this.special_line_data = this.toastrService.show(
-        body,
-        `${titleContent}`,
-        config
-      );
+      this.special_line_data = this.toastrService.show(body, `${titleContent}`, config);
     }
     if (special_line == 'Operator') {
-      this.special_line_operator = this.toastrService.show(
-        body,
-        `${titleContent}`,
-        config
-      );
+      this.special_line_operator = this.toastrService.show(body, `${titleContent}`, config);
     }
   }
 }
