@@ -1,19 +1,19 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, interval } from 'rxjs';
-import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService } from '@nebular/theme';
+import { NbMediaBreakpointsService, NbMenuService, NbThemeService } from '@nebular/theme';
 
-import { UserData } from '../../@core/data/users';
-import { LayoutService } from '../../@core/utils';
+// import { UserData } from '../../@core/data/users';
+// import { LayoutService } from '../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject, timer } from 'rxjs';
 import { AuthService } from '../../pages/auth';
-import * as screenfull from 'screenfull';
+import screenfull from 'screenfull';
 import { GlobalService } from '../../services/global.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-header',
-  styleUrls: ['./header.component.scss'],
+  selector: 'app-dashboard-header',
+  styleUrls: ['./header.component.css'],
   templateUrl: './header.component.html',
 })
 export class HeaderComponent implements OnInit, OnDestroy {
@@ -56,11 +56,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   branch_name: any = '';
 
   constructor(
-    private sidebarService: NbSidebarService,
-    private menuService: NbMenuService,
     private themeService: NbThemeService,
-    private userService: UserData,
-    private layoutService: LayoutService,
+    // private userService: UserData,
+    // private layoutService: LayoutService,
     private breakpointService: NbMediaBreakpointsService,
     private auth: AuthService,
     private globalService: GlobalService,
@@ -78,15 +76,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.globalService.last_update_value.subscribe((data) => (this.last_update = data));
     this.globalService.agent_data_value.subscribe((data) => (this.agent_data = data));
 
-    // this.userService.getUsers()
+    // this.userService
+    //   .getUsers()
     //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe((users: any) => this.user = users.nick);
+    //   .subscribe((users: any) => (this.user = users.nick));
 
     this.user = this.auth.identityClaims;
-
-    this.menuService.onItemClick().subscribe((event) => {
-      this.onItemSelection(event.item.title);
-    });
 
     const { xl } = this.breakpointService.getBreakpointsMap();
     this.themeService
@@ -143,18 +138,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.themeService.changeTheme(themeName);
   }
 
-  toggleSidebar(): boolean {
-    this.sidebarService.toggle(true, 'menu-sidebar');
-    this.layoutService.changeLayoutSize();
-
-    return false;
-  }
-
-  navigateHome() {
-    this.menuService.navigateHome();
-    return false;
-  }
-
   display_realtime_date() {
     const delay = 1000; // every 1 sec
     timer(delay, 1000).subscribe((x) => {
@@ -170,9 +153,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  fullscreen() {
-    // if (screenfull.isEnabled) {
-    //   screenfull.request();
-    // }
+  async fullscreen() {
+    if (screenfull.isEnabled) {
+      await screenfull.toggle();
+    }
   }
 }

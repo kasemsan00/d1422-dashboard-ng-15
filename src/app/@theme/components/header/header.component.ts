@@ -11,7 +11,7 @@ import { GlobalService } from '../../../services/global.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'd1442-dashboard-header',
+  selector: 'app-header',
   styleUrls: ['./header.component.scss'],
   templateUrl: './header.component.html',
 })
