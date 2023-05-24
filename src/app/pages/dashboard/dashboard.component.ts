@@ -917,6 +917,7 @@ export class DashboardComponent implements OnInit {
       url_api_summary = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/summary';
     }
 
+    console.log(url_api_summary);
     this._d1669Service.getConversationChart(url_api_summary + '/' + this.setting.chart_format).subscribe((data: any) => {
       if (data['status'] == 'OK') {
         console.log('GetConversationChart', data);

@@ -22,16 +22,17 @@ export class DashboardChartComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.chartSubscription = this.globalService.getChartData().subscribe((data) => {
-      this.data_chart = JSON.parse(data);
-      if (this.data_chart) {
-        this.data_chart.labels = this.data_chart.labels.map((x: any) => {
-          const date = new Date(x * 1000);
-          const hours = date.getHours();
-          const minutes = '0' + date.getMinutes();
-          return hours + ':' + minutes.substr(-2);
-        });
-        this.initChart();
-      }
+      console.log('ChartData', data);
+      // this.data_chart = JSON.parse(data);
+      // if (this.data_chart) {
+      //   this.data_chart.labels = this.data_chart.labels.map((x: any) => {
+      //     const date = new Date(x * 1000);
+      //     const hours = date.getHours();
+      //     const minutes = '0' + date.getMinutes();
+      //     return hours + ':' + minutes.substr(-2);
+      //   });
+      //   this.initChart();
+      // }
     });
   }
 
