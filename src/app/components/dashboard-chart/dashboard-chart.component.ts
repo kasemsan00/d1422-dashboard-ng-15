@@ -6,7 +6,8 @@ import { options } from "ionicons/icons";
 
 @Component({
   selector: "app-dashboard-chart",
-  template: ` <chart type="line" [data]="data" [options]="options">data_chart</chart> `,
+  styleUrls: ["dashboard-chart.component.css"],
+  template: `<div class="dashboard-chart"><chart style="width:100%" type="line" [data]="data" [options]="options">data_chart</chart></div> `,
 })
 export class DashboardChartComponent implements OnInit, OnDestroy {
   data: any;
