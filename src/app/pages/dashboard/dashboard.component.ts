@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from "@angular/core";
 import {
   NbIconLibraries,
   NbComponentStatus,
@@ -7,21 +7,21 @@ import {
   NbGlobalPosition,
   NbToastrService,
   NbToastrConfig,
-} from '@nebular/theme';
-import { timer, defer } from 'rxjs';
-import { D1669Service } from '../../services/d1669.service';
-import * as screenfull from 'screenfull';
-import { environment } from '../../../environments/environment';
-import { NbDialogService, NbToastRef } from '@nebular/theme';
-import { Router, ActivatedRoute } from '@angular/router';
-import { interval, forkJoin, Subscription } from 'rxjs';
-import { GlobalService } from '../../services/global.service';
-import { AuthService } from '../auth';
+} from "@nebular/theme";
+import { timer, defer } from "rxjs";
+import { D1669Service } from "../../services/d1669.service";
+import * as screenfull from "screenfull";
+import { environment } from "../../../environments/environment";
+import { NbDialogService, NbToastRef } from "@nebular/theme";
+import { Router, ActivatedRoute } from "@angular/router";
+import { interval, forkJoin, Subscription } from "rxjs";
+import { GlobalService } from "../../services/global.service";
+import { AuthService } from "../auth";
 
 @Component({
-  styleUrls: ['./dashboard.component.scss'],
-  selector: 'app-dashboard',
-  templateUrl: 'dashboard.component.html',
+  styleUrls: ["./dashboard.component.scss"],
+  selector: "app-dashboard",
+  templateUrl: "dashboard.component.html",
 })
 export class DashboardComponent implements OnInit {
   is_fullscreen: any = false;
@@ -34,8 +34,8 @@ export class DashboardComponent implements OnInit {
   url_mapper: any;
   agent_lists: any;
 
-  dashboard_name: any = 'Dashboard d1669 Bangkok';
-  dashboard_datetime: any = ''; // '22 February 2020 | 16:33:45'
+  dashboard_name: any = "Dashboard d1669 Bangkok";
+  dashboard_datetime: any = ""; // '22 February 2020 | 16:33:45'
 
   duration_sync: any;
 
@@ -44,20 +44,20 @@ export class DashboardComponent implements OnInit {
   agents: any = [];
 
   setting: any = {
-    chart_format: '24hr',
-    abandon_lists_sorting_format: 'count',
-    display_name: 'name',
-    agent_mode: 'normal',
+    chart_format: "24hr",
+    abandon_lists_sorting_format: "count",
+    display_name: "name",
+    agent_mode: "normal",
   };
 
   setting_mapper: any = {
-    '24hr': 'Last 24 Hours',
-    today: 'Today',
+    "24hr": "Last 24 Hours",
+    today: "Today",
   };
 
   agent_type_id: any = {
-    '6': 'Call Taker and Non Emergency Swarm',
-    '7': 'Coordinator and Dispatcher Swarm',
+    "6": "Call Taker and Non Emergency Swarm",
+    "7": "Coordinator and Dispatcher Swarm",
   };
 
   trigger: any = true;
@@ -69,7 +69,7 @@ export class DashboardComponent implements OnInit {
   agents_non_emergency: any = [];
   agents_backup: any = [];
   agents_data_count: any = {
-    agent_mode: '',
+    agent_mode: "",
     agent_normal: 0,
     agent_backup: 0,
   };
@@ -83,11 +83,11 @@ export class DashboardComponent implements OnInit {
   display_calltime_backup: any = [];
 
   special_line: any = {
-    s_ttrs: { value: 0, type: '' },
-    s_191: { value: 0, type: '' },
-    s_cellular: { value: 0, type: '' },
-    s_data: { value: 0, type: '' },
-    s_operator: { value: 0, type: '' },
+    s_ttrs: { value: 0, type: "" },
+    s_191: { value: 0, type: "" },
+    s_cellular: { value: 0, type: "" },
+    s_data: { value: 0, type: "" },
+    s_operator: { value: 0, type: "" },
   };
 
   abandon_lists: any = [];
@@ -96,59 +96,59 @@ export class DashboardComponent implements OnInit {
 
   conversation_amount = [
     {
-      id: 'incoming',
-      title: 'Incoming Calls',
+      id: "incoming",
+      title: "Incoming Calls",
       value: 0,
-      color: 'info',
-      format: 'status',
+      color: "info",
+      format: "status",
     },
     {
-      id: 'answer',
-      title: 'Answered Calls',
+      id: "answer",
+      title: "Answered Calls",
       value: 0,
-      color: 'success',
-      format: 'status',
+      color: "success",
+      format: "status",
     },
     {
-      id: 'abandon',
-      title: 'Abandoned Calls',
+      id: "abandon",
+      title: "Abandoned Calls",
       value: 0,
-      color: 'danger',
-      format: 'status',
+      color: "danger",
+      format: "status",
     },
     {
-      id: 'percent_sla',
-      title: 'SLA (%)',
+      id: "percent_sla",
+      title: "SLA (%)",
       value: 98,
-      color: 'success',
-      format: 'outline',
+      color: "success",
+      format: "outline",
     },
   ];
 
   conversation_time = [
     {
-      id: 'avg_service',
-      title: 'AVG Talk Time',
-      value: '00:00:00',
-      color: 'info',
-      format: 'outline',
+      id: "avg_service",
+      title: "AVG Talk Time",
+      value: "00:00:00",
+      color: "info",
+      format: "outline",
     },
     {
-      id: 'longest_service',
-      title: 'Longest Talk Time',
-      value: '00:00:00',
-      color: 'info',
-      format: 'outline',
+      id: "longest_service",
+      title: "Longest Talk Time",
+      value: "00:00:00",
+      color: "info",
+      format: "outline",
     },
   ];
 
   agent_status_text: any = {
-    online: 'Online',
-    ringing: 'Ringing',
-    busy: 'Talking',
-    dnd_short: 'DND',
-    dnd_long: 'DND',
-    offline: 'Offline',
+    online: "Online",
+    ringing: "Ringing",
+    busy: "Talking",
+    dnd_short: "DND",
+    dnd_long: "DND",
+    offline: "Offline",
   };
 
   // toastr
@@ -159,9 +159,9 @@ export class DashboardComponent implements OnInit {
   toastr_position: NbGlobalPosition = NbGlobalPhysicalPosition.TOP_RIGHT;
   toastr_position_call: NbGlobalPosition = NbGlobalPhysicalPosition.BOTTOM_LEFT;
   toastr_preventDuplicates = false;
-  toastr_status: NbComponentStatus = 'success';
+  toastr_status: NbComponentStatus = "success";
 
-  toastr_title = 'Notification!';
+  toastr_title = "Notification!";
   toastr_content = `Update setting successfully!`;
 
   config: NbToastrConfig;
@@ -183,7 +183,7 @@ export class DashboardComponent implements OnInit {
   subscriptions_sse: Subscription;
   subscriptions_forkjoin: Subscription;
 
-  end_case_status: any = ['HANGUP', 'ABANDON'];
+  end_case_status: any = ["HANGUP", "ABANDON"];
 
   special_line_ttrs: NbToastRef;
   special_line_191: NbToastRef;
@@ -193,7 +193,7 @@ export class DashboardComponent implements OnInit {
 
   public now: Date = new Date();
 
-  url_mode: any = 'mapper'; // url_mapper, url_fixed
+  url_mode: any = "mapper"; // url_mapper, url_fixed
   branch_id: any;
   branch_name: any;
 
@@ -207,17 +207,17 @@ export class DashboardComponent implements OnInit {
     private globalService: GlobalService,
     private route: ActivatedRoute
   ) {
-    this.evaIcons = Array.from(iconsLibrary.getPack('eva').icons.keys()).filter((icon) => icon.indexOf('outline') === -1);
+    this.evaIcons = Array.from(iconsLibrary.getPack("eva").icons.keys()).filter((icon) => icon.indexOf("outline") === -1);
 
-    iconsLibrary.registerFontPack('fa', {
-      packClass: 'fa',
-      iconClassPrefix: 'fa',
+    iconsLibrary.registerFontPack("fa", {
+      packClass: "fa",
+      iconClassPrefix: "fa",
     });
-    iconsLibrary.registerFontPack('far', {
-      packClass: 'far',
-      iconClassPrefix: 'fa',
+    iconsLibrary.registerFontPack("far", {
+      packClass: "far",
+      iconClassPrefix: "fa",
     });
-    iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
+    iconsLibrary.registerFontPack("ion", { iconClassPrefix: "ion" });
 
     this.interval;
   }
@@ -239,24 +239,24 @@ export class DashboardComponent implements OnInit {
     this.route.params.subscribe((params: any) => {
       let branch_id = params.branch_id;
       if (branch_id) {
-        this.url_mode = 'fixed';
+        this.url_mode = "fixed";
         this.branch_id = branch_id;
         this.getBranchName(this.branch_id);
       } else {
-        this.url_mode = 'mapper';
-        this.globalService.branch_name = '';
+        this.url_mode = "mapper";
+        this.globalService.branch_name = "";
       }
     });
   }
 
   getBranchName(branch_id: string) {
-    console.log('branch_id', branch_id);
-    this.globalService.branch_name = '';
-    this._d1669Service.getBranch(environment.environment.url_backend + '/mapper-agent/v1/branchs?limit=100').subscribe((data: any) => {
-      if (data['status'] == 'OK') {
-        data['data']['data'].map((item: any) => {
+    console.log("branch_id", branch_id);
+    this.globalService.branch_name = "";
+    this._d1669Service.getBranch(environment.environment.url_backend + "/mapper-agent/v1/branchs?limit=100").subscribe((data: any) => {
+      if (data["status"] == "OK") {
+        data["data"]["data"].map((item: any) => {
           if (item.branch_id == branch_id) {
-            console.log('branch_name1', item.branch_name);
+            console.log("branch_name1", item.branch_name);
             this.globalService.branch_name = item.branch_name;
             return;
           }
@@ -268,38 +268,38 @@ export class DashboardComponent implements OnInit {
   }
 
   initSetting() {
-    let chart_format = localStorage.getItem('chart_format');
-    let abandon_lists_sorting_format = localStorage.getItem('abandon_lists_sorting_format');
-    let display_name = localStorage.getItem('display_name');
-    let agent_mode = localStorage.getItem('agent_mode');
+    let chart_format = localStorage.getItem("chart_format");
+    let abandon_lists_sorting_format = localStorage.getItem("abandon_lists_sorting_format");
+    let display_name = localStorage.getItem("display_name");
+    let agent_mode = localStorage.getItem("agent_mode");
     if (chart_format) {
       this.setting.chart_format = chart_format;
-      localStorage.setItem('chart_format', chart_format);
+      localStorage.setItem("chart_format", chart_format);
     } else {
-      localStorage.setItem('chart_format', this.setting.chart_format);
+      localStorage.setItem("chart_format", this.setting.chart_format);
     }
     if (abandon_lists_sorting_format) {
       this.setting.abandon_lists_sorting_format = abandon_lists_sorting_format;
-      localStorage.setItem('abandon_lists_sorting_format', abandon_lists_sorting_format);
+      localStorage.setItem("abandon_lists_sorting_format", abandon_lists_sorting_format);
     } else {
-      localStorage.setItem('abandon_lists_sorting_format', this.setting.abandon_lists_sorting_format);
+      localStorage.setItem("abandon_lists_sorting_format", this.setting.abandon_lists_sorting_format);
     }
     if (display_name) {
       this.setting.display_name = display_name;
-      localStorage.setItem('display_name', display_name);
+      localStorage.setItem("display_name", display_name);
     } else {
-      localStorage.setItem('display_name', this.setting.display_name);
+      localStorage.setItem("display_name", this.setting.display_name);
     }
     if (agent_mode) {
       this.setting.agent_mode = agent_mode;
-      localStorage.setItem('agent_mode', agent_mode);
+      localStorage.setItem("agent_mode", agent_mode);
     } else {
-      localStorage.setItem('agent_mode', this.setting.agent_mode);
+      localStorage.setItem("agent_mode", this.setting.agent_mode);
     }
   }
 
   initDashboard() {
-    console.log('fetchConversationSummary');
+    console.log("fetchConversationSummary");
     this.fetchConversationSummary();
 
     this.display_realtime_date();
@@ -329,23 +329,23 @@ export class DashboardComponent implements OnInit {
     this._d1669Service
       .getMapper(
         environment.environment.url_mapper +
-          '/' +
+          "/" +
           this.user.preferred_username +
-          '/services/dashboard?network_policy=' +
+          "/services/dashboard?network_policy=" +
           environment.environment.network_policy
       )
       .subscribe((data: any) => {
-        if (data['status'] == 'OK') {
-          this.url_mapper = data['data'].api_url;
-          let url_api_sse = '';
-          if (this.url_mode == 'mapper') {
+        if (data["status"] == "OK") {
+          this.url_mapper = data["data"].api_url;
+          let url_api_sse = "";
+          if (this.url_mode == "mapper") {
             url_api_sse = this.url_mapper.api_sse;
-            this.branch_id = data['data'].branch_id;
+            this.branch_id = data["data"].branch_id;
           } else {
-            url_api_sse = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/event';
+            url_api_sse = environment.environment.url_backend + "/sse/v1/" + this.branch_id + "/event";
           }
           this.getBranchName(this.branch_id);
-          localStorage.setItem('url_mapper', JSON.stringify(this.url_mapper));
+          localStorage.setItem("url_mapper", JSON.stringify(this.url_mapper));
           this._d1669Service.dedicatedWorker_post(url_api_sse);
           // if (data["data"].branch_id == "") {
           //   if (this.user.roles.indexOf('admin') > -1) {
@@ -367,40 +367,40 @@ export class DashboardComponent implements OnInit {
   }
 
   fetchSIPStatus() {
-    let url_api_status = '';
-    if (this.url_mode == 'mapper') {
+    let url_api_status = "";
+    if (this.url_mode == "mapper") {
       url_api_status = this.url_mapper.api_status;
     } else {
-      url_api_status = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/status';
+      url_api_status = environment.environment.url_backend + "/sse/v1/" + this.branch_id + "/status";
     }
-    this._d1669Service.getSIPStatus(url_api_status + '/' + this.setting.chart_format).subscribe((data: any) => {
-      if (data['status'] == 'OK') {
-        this.globalService.sip_status = data['data']['status'];
+    this._d1669Service.getSIPStatus(url_api_status + "/" + this.setting.chart_format).subscribe((data: any) => {
+      if (data["status"] == "OK") {
+        this.globalService.sip_status = data["data"]["status"];
       } else {
-        this.globalService.sip_status = 'N/A';
+        this.globalService.sip_status = "N/A";
       }
     });
   }
 
   fetchAgents() {
-    let url_api_agent_status = '';
-    let url_api_agent = '';
-    if (this.url_mode == 'mapper') {
+    let url_api_agent_status = "";
+    let url_api_agent = "";
+    if (this.url_mode == "mapper") {
       url_api_agent_status = this.url_mapper.api_agent_status;
       url_api_agent = this.url_mapper.api_agent;
     } else {
-      url_api_agent_status = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/agent';
-      url_api_agent = environment.environment.url_backend + '/user-manage/v1/' + this.branch_id + '/users';
+      url_api_agent_status = environment.environment.url_backend + "/sse/v1/" + this.branch_id + "/agent";
+      url_api_agent = environment.environment.url_backend + "/user-manage/v1/" + this.branch_id + "/users";
     }
     this.subscriptions_forkjoin = forkJoin({
       // agent_status: this._d1669Service.getAgentStatus(url_api_agent_status),
       agent_lists: this._d1669Service.getAgentLists(url_api_agent),
     }).subscribe(({ agent_status, agent_lists }: any) => {
-      if (agent_lists['data'] && agent_lists['data'].length > 0) {
-        this.agent_lists = agent_lists['data'];
+      if (agent_lists["data"] && agent_lists["data"].length > 0) {
+        this.agent_lists = agent_lists["data"];
       }
-      if (agent_status['data'] && agent_status['data'].length > 0) {
-        this.agents = agent_status['data'];
+      if (agent_status["data"] && agent_status["data"].length > 0) {
+        this.agents = agent_status["data"];
         this.mapDisplayNameAgents();
         this.filterAgentByType();
       }
@@ -412,7 +412,7 @@ export class DashboardComponent implements OnInit {
     const agent_normal_system = this.agents.filter((x: any) => x.agent_type_id <= 5).length;
     const agent_backup_system = this.agents.filter((x: any) => x.agent_type_id === 8).length;
     const data = {
-      agent_mode: localStorage.getItem('agent_mode') || 'normal',
+      agent_mode: localStorage.getItem("agent_mode") || "normal",
       agent_normal: agent_normal_system,
       agent_backup: agent_backup_system,
     };
@@ -463,8 +463,8 @@ export class DashboardComponent implements OnInit {
       let dataAgents = data;
 
       // check initial, is a first connection
-      if (dataAgents.title === 'initial') {
-        if (environment.environment.env_mode != 'production') console.log('SSE:', dataAgents.status);
+      if (dataAgents.title === "initial") {
+        if (environment.environment.env_mode != "production") console.log("SSE:", dataAgents.status);
 
         if (dataAgents.body === null) {
           this.agents = [];
@@ -485,10 +485,10 @@ export class DashboardComponent implements OnInit {
       }
 
       // check trigger, support agent login, logout and change position
-      if (dataAgents.title == 'trigger') {
-        if (environment.environment.env_mode != 'production') {
-          console.log('SSE:', dataAgents.title);
-          console.log('Change position');
+      if (dataAgents.title == "trigger") {
+        if (environment.environment.env_mode != "production") {
+          console.log("SSE:", dataAgents.title);
+          console.log("Change position");
           console.log(dataAgents.body);
         }
 
@@ -511,16 +511,16 @@ export class DashboardComponent implements OnInit {
       }
 
       // check SIP status
-      if (dataAgents.title == 'sip') {
-        if (dataAgents.body['status']) {
-          this.globalService.sip_status = dataAgents.body['status'];
+      if (dataAgents.title == "sip") {
+        if (dataAgents.body["status"]) {
+          this.globalService.sip_status = dataAgents.body["status"];
         } else {
-          this.globalService.sip_status = 'N/A';
+          this.globalService.sip_status = "N/A";
         }
         return;
       }
 
-      if (environment.environment.env_mode != 'production') console.log('dataAgents', dataAgents);
+      if (environment.environment.env_mode != "production") console.log("dataAgents", dataAgents);
 
       // ******************** Start event without agent ********************
 
@@ -543,35 +543,35 @@ export class DashboardComponent implements OnInit {
       // }
 
       // manage "Call Taker and Non Emergency Swarm" & "Coordinator and Dispatcher Swarm"
-      if (dataAgents.body.agent_type_id == '6' || dataAgents.body.agent_type_id == '7') {
+      if (dataAgents.body.agent_type_id == "6" || dataAgents.body.agent_type_id == "7") {
         // swarm
-        if (environment.environment.env_mode != 'production') console.log(dataAgents.body.agent_type, dataAgents.body.source_type);
-        if (dataAgents.body.action == 'QUEUE_FULL_ANOTHER' || dataAgents.body.action == 'RINGING') {
-          if (dataAgents.body.source_type == 'Cellular') {
+        if (environment.environment.env_mode != "production") console.log(dataAgents.body.agent_type, dataAgents.body.source_type);
+        if (dataAgents.body.action == "QUEUE_FULL_ANOTHER" || dataAgents.body.action == "RINGING") {
+          if (dataAgents.body.source_type == "Cellular") {
             this.special_line.s_cellular.value++;
             this.special_line.s_cellular.type = dataAgents.body.agent_type_id;
             this.globalService.special_line = JSON.stringify(this.special_line);
             return;
           }
-          if (dataAgents.body.source_type == 'Data') {
+          if (dataAgents.body.source_type == "Data") {
             this.special_line.s_data.value++;
             this.special_line.s_data.type = dataAgents.body.agent_type_id;
             this.globalService.special_line = JSON.stringify(this.special_line);
             return;
           }
-          if (dataAgents.body.source_type == 'TTRS') {
+          if (dataAgents.body.source_type == "TTRS") {
             this.special_line.s_ttrs.value++;
             this.special_line.s_ttrs.type = dataAgents.body.agent_type_id;
             this.globalService.special_line = JSON.stringify(this.special_line);
             return;
           }
-          if (dataAgents.body.source_type == '191') {
+          if (dataAgents.body.source_type == "191") {
             this.special_line.s_191.value++;
             this.special_line.s_191.type = dataAgents.body.agent_type_id;
             this.globalService.special_line = JSON.stringify(this.special_line);
             return;
           }
-          if (dataAgents.body.source_type == 'Operator') {
+          if (dataAgents.body.source_type == "Operator") {
             this.special_line.s_operator.value++;
             this.special_line.s_operator.type = dataAgents.body.agent_type_id;
             this.globalService.special_line = JSON.stringify(this.special_line);
@@ -579,8 +579,8 @@ export class DashboardComponent implements OnInit {
           }
         }
 
-        if (['NO_ANSWER', 'ANSWER', 'ANSWER_ANOTHER', 'QUEUE_FULL_ANOTHER_ABANDON'].indexOf(dataAgents.body.action) > -1) {
-          if (dataAgents.body.source_type == 'Cellular') {
+        if (["NO_ANSWER", "ANSWER", "ANSWER_ANOTHER", "QUEUE_FULL_ANOTHER_ABANDON"].indexOf(dataAgents.body.action) > -1) {
+          if (dataAgents.body.source_type == "Cellular") {
             if (this.special_line.s_cellular.value > 0) {
               this.special_line.s_cellular.value--;
               this.special_line.s_cellular.type = dataAgents.body.agent_type_id;
@@ -588,7 +588,7 @@ export class DashboardComponent implements OnInit {
               return;
             }
           }
-          if (dataAgents.body.source_type == 'Data') {
+          if (dataAgents.body.source_type == "Data") {
             if (this.special_line.s_data.value > 0) {
               this.special_line.s_data.value--;
               this.special_line.s_data.type = dataAgents.body.agent_type_id;
@@ -596,7 +596,7 @@ export class DashboardComponent implements OnInit {
               return;
             }
           }
-          if (dataAgents.body.source_type == 'TTRS') {
+          if (dataAgents.body.source_type == "TTRS") {
             if (this.special_line.s_ttrs.value > 0) {
               this.special_line.s_ttrs.value--;
               this.special_line.s_ttrs.type = dataAgents.body.agent_type_id;
@@ -604,7 +604,7 @@ export class DashboardComponent implements OnInit {
               return;
             }
           }
-          if (dataAgents.body.source_type == '191') {
+          if (dataAgents.body.source_type == "191") {
             if (this.special_line.s_191.value > 0) {
               this.special_line.s_191.value--;
               this.special_line.s_191.type = dataAgents.body.agent_type_id;
@@ -612,7 +612,7 @@ export class DashboardComponent implements OnInit {
               return;
             }
           }
-          if (dataAgents.body.source_type == 'Operator') {
+          if (dataAgents.body.source_type == "Operator") {
             if (this.special_line.s_operator.value > 0) {
               this.special_line.s_operator.value--;
               this.special_line.s_operator.type = dataAgents.body.agent_type_id;
@@ -638,7 +638,7 @@ export class DashboardComponent implements OnInit {
         // }
       }
 
-      if (dataAgents.body.action === 'QUEUE_FULL_ABANDON') {
+      if (dataAgents.body.action === "QUEUE_FULL_ABANDON") {
         this.updateStatistic(dataAgents.body);
         return;
       }
@@ -647,11 +647,11 @@ export class DashboardComponent implements OnInit {
       // ******************** Start event about agent busy ********************
       // replace dnd status & switch all busy every this agent
       if (
-        dataAgents.body.action.includes('DND') ||
-        dataAgents.body.action === 'ANSWER' ||
-        dataAgents.body.action === 'HANGUP' ||
-        dataAgents.body.action === 'ABANDON' ||
-        dataAgents.body.action === 'NO_ANSWER'
+        dataAgents.body.action.includes("DND") ||
+        dataAgents.body.action === "ANSWER" ||
+        dataAgents.body.action === "HANGUP" ||
+        dataAgents.body.action === "ABANDON" ||
+        dataAgents.body.action === "NO_ANSWER"
       ) {
         this.agents.map((item: any) => {
           if (item.agent_extension == dataAgents.body.agent_extension) item.action = dataAgents.body.action;
@@ -666,48 +666,48 @@ export class DashboardComponent implements OnInit {
         // This event matches an agent.
         if (this.agents[i].agent_extension == dataAgents.body.agent_extension && this.agents[i].agent_type == dataAgents.body.agent_type) {
           // this agent receive event about timimg
-          if (dataAgents.body.action == 'RINGING' || dataAgents.body.action == 'ANSWER' || dataAgents.body.action == 'TRANSFER_JOIN_CALLING') {
+          if (dataAgents.body.action == "RINGING" || dataAgents.body.action == "ANSWER" || dataAgents.body.action == "TRANSFER_JOIN_CALLING") {
             if (dataAgents.body.source == dataAgents.body.destination) {
               // fix for show as Busy
               dataAgents.body.action_at = 0;
             }
             // dataAgents.body.source = dataAgents.body.a_number
             // switch source <=> destination when outbound
-            if (dataAgents.body.bound_type == 'outbound') {
+            if (dataAgents.body.bound_type == "outbound") {
               let tmp = dataAgents.body.source;
               dataAgents.body.source = dataAgents.body.a_number;
               dataAgents.body.destination = tmp;
             }
             // repeace data to this agent
             this.agents[i] = dataAgents.body;
-            if (dataAgents.body.action == 'TRANSFER_JOIN_CALLING') {
+            if (dataAgents.body.action == "TRANSFER_JOIN_CALLING") {
               // Continuous timing
               let tmp_action_at = this.agents[i].action_at;
               this.agents[i] = dataAgents.body;
               this.agents[i].action_at = tmp_action_at;
               break;
             }
-            if (dataAgents.body.action == 'RINGING') {
+            if (dataAgents.body.action == "RINGING") {
               // update statistic only inbound
-              if (dataAgents.body.bound_type == 'inbound') {
+              if (dataAgents.body.bound_type == "inbound") {
                 this.updateStatistic(dataAgents.body);
               }
               break;
             }
-            if (dataAgents.body.action == 'ANSWER') {
+            if (dataAgents.body.action == "ANSWER") {
               // update statistic only inbound
-              if (dataAgents.body.bound_type == 'inbound') {
+              if (dataAgents.body.bound_type == "inbound") {
                 this.updateStatistic(dataAgents.body);
               }
               // check for close special line notify
-              if (dataAgents.body.source_type == 'TTRS') {
+              if (dataAgents.body.source_type == "TTRS") {
                 if (this.special_line.s_ttrs.value > 0) {
                   this.special_line.s_ttrs.value--;
                   if (this.special_line.s_ttrs.value < 0) this.special_line.s_ttrs.value = 0;
                   this.globalService.special_line = JSON.stringify(this.special_line);
                 }
               }
-              if (dataAgents.body.source_type == '191') {
+              if (dataAgents.body.source_type == "191") {
                 if (this.special_line.s_191.value > 0) {
                   this.special_line.s_191.value--;
                   if (this.special_line.s_191.value < 0) this.special_line.s_191.value = 0;
@@ -720,21 +720,21 @@ export class DashboardComponent implements OnInit {
 
           // this agent is end conversation
           if (
-            dataAgents.body.action == 'HANGUP' ||
-            dataAgents.body.action == 'ABANDON' ||
-            dataAgents.body.action == 'NO_ANSWER' ||
-            dataAgents.body.action == 'CANCEL_TRANSFER'
+            dataAgents.body.action == "HANGUP" ||
+            dataAgents.body.action == "ABANDON" ||
+            dataAgents.body.action == "NO_ANSWER" ||
+            dataAgents.body.action == "CANCEL_TRANSFER"
           ) {
             this.agents[i] = dataAgents.body;
-            if (environment.environment.env_mode != 'production') console.log('End conversation', dataAgents.body.action);
+            if (environment.environment.env_mode != "production") console.log("End conversation", dataAgents.body.action);
             this.updateStatistic(dataAgents.body);
-            this.agents[i].action = 'DND_OFF';
+            this.agents[i].action = "DND_OFF";
             break;
           }
 
           // this agent is transfer
-          if (dataAgents.body.action == 'TRANSFER' && dataAgents.body.action_by == this.agents[i].agent_extension) {
-            console.log('agent ' + this.agents[i].agent_extension + ' (' + this.agents[i].agent_type + ') is transfered');
+          if (dataAgents.body.action == "TRANSFER" && dataAgents.body.action_by == this.agents[i].agent_extension) {
+            console.log("agent " + this.agents[i].agent_extension + " (" + this.agents[i].agent_type + ") is transfered");
             // Continuous timing & keep source
             let tmp_action_at = this.agents[i].action_at;
             let tmp_source_type = this.agents[i].source_type;
@@ -746,8 +746,8 @@ export class DashboardComponent implements OnInit {
           }
 
           // this agent is transfer
-          if (dataAgents.body.action == 'LOST_TRANSFER') {
-            console.log('agent ' + this.agents[i].agent_extension + ' (' + this.agents[i].agent_type + ') is lost transfered');
+          if (dataAgents.body.action == "LOST_TRANSFER") {
+            console.log("agent " + this.agents[i].agent_extension + " (" + this.agents[i].agent_type + ") is lost transfered");
             // Continuous timing & keep source
             let tmp_action_at = this.agents[i].action_at;
             let tmp_source_type = this.agents[i].source_type;
@@ -759,23 +759,23 @@ export class DashboardComponent implements OnInit {
           }
 
           // this agent join conference
-          if (dataAgents.body.action == 'JOIN_CONFERENCE' && dataAgents.body.action_by == this.agents[i].agent_extension) {
-            if (environment.environment.env_mode != 'production')
-              console.log('agent ' + this.agents[i].agent_extension + ' (' + this.agents[i].agent_type + ') joined conference');
+          if (dataAgents.body.action == "JOIN_CONFERENCE" && dataAgents.body.action_by == this.agents[i].agent_extension) {
+            if (environment.environment.env_mode != "production")
+              console.log("agent " + this.agents[i].agent_extension + " (" + this.agents[i].agent_type + ") joined conference");
             // Continuous timing
             let tmp_action_at = this.agents[i].action_at;
             this.agents[i] = dataAgents.body;
             this.agents[i].action_at = tmp_action_at;
             this.agents[i].source = this.agents[i].a_number;
-            if (environment.environment.env_mode != 'production') console.log('action_at', this.agents[i].action_at);
+            if (environment.environment.env_mode != "production") console.log("action_at", this.agents[i].action_at);
             break;
           }
 
           // this agent leave conference
-          if (dataAgents.body.action == 'LEAVE_CONFERENCE' && dataAgents.body.action_by === this.agents[i].agent_extension) {
-            if (environment.environment.env_mode != 'production') console.log('agent ' + this.agents[i].agent_extension + '  leaved conference');
+          if (dataAgents.body.action == "LEAVE_CONFERENCE" && dataAgents.body.action_by === this.agents[i].agent_extension) {
+            if (environment.environment.env_mode != "production") console.log("agent " + this.agents[i].agent_extension + "  leaved conference");
             this.agents[i] = dataAgents.body;
-            this.agents[i].action = 'DND_OFF';
+            this.agents[i].action = "DND_OFF";
             this.agents[i].source = this.agents[i].a_number;
             break;
           }
@@ -792,14 +792,14 @@ export class DashboardComponent implements OnInit {
   checkDurationSync() {
     this.globalService.duration_sync_value.subscribe((nextValue) => {
       const period = () => parseInt(nextValue);
-      if (environment.environment.env_mode != 'production') {
-        console.log('period update', period());
-        console.log('nextValue', nextValue);
+      if (environment.environment.env_mode != "production") {
+        console.log("period update", period());
+        console.log("nextValue", nextValue);
       }
 
       if (isNaN(period())) {
-        if (environment.environment.env_mode != 'production') console.log('updated');
-        this.globalService.duration_sync = '5';
+        if (environment.environment.env_mode != "production") console.log("updated");
+        this.globalService.duration_sync = "5";
       } else {
         this.initSetting();
         this.initDashboard();
@@ -822,11 +822,11 @@ export class DashboardComponent implements OnInit {
       if (!this.noti_specail_line) {
         // this.special_line = { s_ttrs: 0, s_191: 0, s_cellular: 0, s_data: 0, s_operator: 0 }
         this.special_line = {
-          s_ttrs: { value: 0, type: '' },
-          s_191: { value: 0, type: '' },
-          s_cellular: { value: 0, type: '' },
-          s_data: { value: 0, type: '' },
-          s_operator: { value: 0, type: '' },
+          s_ttrs: { value: 0, type: "" },
+          s_191: { value: 0, type: "" },
+          s_cellular: { value: 0, type: "" },
+          s_data: { value: 0, type: "" },
+          s_operator: { value: 0, type: "" },
         };
         this.globalService.special_line = JSON.stringify(this.special_line);
       }
@@ -834,10 +834,10 @@ export class DashboardComponent implements OnInit {
       if (this.noti_specail_line.s_ttrs.value > 0) {
         if (this.special_line_ttrs) this.special_line_ttrs.close();
         this.showToastCall(
-          this.noti_specail_line.s_ttrs.type == '6' ? 'warning' : 'danger',
-          'Incoming call from TTRS (' + this.noti_specail_line.s_ttrs.value + ')',
-          '',
-          'TTRS'
+          this.noti_specail_line.s_ttrs.type == "6" ? "warning" : "danger",
+          "Incoming call from TTRS (" + this.noti_specail_line.s_ttrs.value + ")",
+          "",
+          "TTRS"
         );
       }
       if (this.noti_specail_line.s_ttrs.value <= 0) {
@@ -846,10 +846,10 @@ export class DashboardComponent implements OnInit {
       if (this.noti_specail_line.s_191.value > 0) {
         if (this.special_line_191) this.special_line_191.close();
         this.showToastCall(
-          this.noti_specail_line.s_191.type == '6' ? 'warning' : 'danger',
-          'Incoming call from 191 (' + this.noti_specail_line.s_191.value + ')',
-          '',
-          '191'
+          this.noti_specail_line.s_191.type == "6" ? "warning" : "danger",
+          "Incoming call from 191 (" + this.noti_specail_line.s_191.value + ")",
+          "",
+          "191"
         );
       }
       if (this.noti_specail_line.s_191.value <= 0) {
@@ -858,10 +858,10 @@ export class DashboardComponent implements OnInit {
       if (this.noti_specail_line.s_cellular.value > 0) {
         if (this.special_line_cellular) this.special_line_cellular.close();
         this.showToastCall(
-          this.noti_specail_line.s_cellular.type == '6' ? 'warning' : 'danger',
-          'Incoming call from Cellular (' + this.noti_specail_line.s_cellular.value + ')',
-          '',
-          'Cellular'
+          this.noti_specail_line.s_cellular.type == "6" ? "warning" : "danger",
+          "Incoming call from Cellular (" + this.noti_specail_line.s_cellular.value + ")",
+          "",
+          "Cellular"
         );
       }
       if (this.noti_specail_line.s_cellular.value <= 0) {
@@ -870,10 +870,10 @@ export class DashboardComponent implements OnInit {
       if (this.noti_specail_line.s_data.value > 0) {
         if (this.special_line_data) this.special_line_data.close();
         this.showToastCall(
-          this.noti_specail_line.s_data.type == '6' ? 'warning' : 'danger',
-          'Incoming call from Data (' + this.noti_specail_line.s_data.value + ')',
-          '',
-          'Data'
+          this.noti_specail_line.s_data.type == "6" ? "warning" : "danger",
+          "Incoming call from Data (" + this.noti_specail_line.s_data.value + ")",
+          "",
+          "Data"
         );
       }
       if (this.noti_specail_line.s_data.value <= 0) {
@@ -882,10 +882,10 @@ export class DashboardComponent implements OnInit {
       if (this.noti_specail_line.s_operator.value > 0) {
         if (this.special_line_operator) this.special_line_operator.close();
         this.showToastCall(
-          this.noti_specail_line.s_operator.type == '6' ? 'warning' : 'danger',
-          'Incoming call from Operator (' + this.noti_specail_line.s_operator.value + ')',
-          '',
-          'Operator'
+          this.noti_specail_line.s_operator.type == "6" ? "warning" : "danger",
+          "Incoming call from Operator (" + this.noti_specail_line.s_operator.value + ")",
+          "",
+          "Operator"
         );
       }
       if (this.noti_specail_line.s_operator.value <= 0) {
@@ -895,43 +895,44 @@ export class DashboardComponent implements OnInit {
   }
 
   filterAgentByType() {
-    this.agents_call_taker = this.agents.filter((x: any) => x.agent_type == 'Call Taker');
-    this.agents_dispatcher = this.agents.filter((x: any) => x.agent_type == 'Dispatcher');
-    this.agents_supervisor = this.agents.filter((x: any) => x.agent_type == 'Supervisor');
-    this.agents_coordinator = this.agents.filter((x: any) => x.agent_type == 'Coordinator');
-    this.agents_non_emergency = this.agents.filter((x: any) => x.agent_type == 'Non Emergency');
-    this.agents_backup = this.agents.filter((x: any) => x.agent_type == 'Tablet');
+    this.agents_call_taker = this.agents.filter((x: any) => x.agent_type == "Call Taker");
+    this.agents_dispatcher = this.agents.filter((x: any) => x.agent_type == "Dispatcher");
+    this.agents_supervisor = this.agents.filter((x: any) => x.agent_type == "Supervisor");
+    this.agents_coordinator = this.agents.filter((x: any) => x.agent_type == "Coordinator");
+    this.agents_non_emergency = this.agents.filter((x: any) => x.agent_type == "Non Emergency");
+    this.agents_backup = this.agents.filter((x: any) => x.agent_type == "Tablet");
   }
 
   fetchConversationSummary() {
-    console.log('fetchConversationSummary', this.url_mapper);
-    console.log('conversations_amount', this.conversations_amount);
+    console.log("fetchConversationSummary", this.url_mapper);
+    console.log("conversations_amount", this.conversations_amount);
 
     this.conversations_amount = this.conversation_amount;
     this.conversations_time = this.conversation_time;
 
-    let url_api_summary = '';
-    if (this.url_mode == 'mapper') {
-      url_api_summary = this.url_mapper.api_summary;
-    } else {
-      url_api_summary = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/summary';
-    }
+    let url_api_summary = "";
+    // if (this.url_mode == "mapper") {
+    //   url_api_summary = this.url_mapper.api_summary;
+    // } else {
+    //   url_api_summary = environment.environment.url_backend + "/sse/v1/" + this.branch_id + "/summary";
+    // }
 
     console.log(url_api_summary);
-    this._d1669Service.getConversationChart(url_api_summary + '/' + this.setting.chart_format).subscribe((data: any) => {
-      if (data['status'] == 'OK') {
-        console.log('GetConversationChart', data);
+    // เปลี่ยนทีหลัง
+    this._d1669Service.getConversationChart("https://cis-api-admin.dems1669.com/sse/v1/72/summary/24hr").subscribe((data: any) => {
+      if (data["status"] === "OK") {
+        console.log("GetConversationChart", data);
         // summary
         // assign value
         this.conversation_amount = this.conversation_amount.map((x: any) => {
-          if (x.id in data['data'].summary) {
-            x.value = data['data'].summary[x.id];
+          if (x.id in data["data"].summary) {
+            x.value = data["data"].summary[x.id];
             return x;
           }
         });
         this.conversation_time = this.conversation_time.map((x: any) => {
-          if (x.id in data['data'].summary) {
-            x.value = this.secToTime(data['data'].summary[x.id]);
+          if (x.id in data["data"].summary) {
+            x.value = this.secToTime(data["data"].summary[x.id]);
             return x;
           }
         });
@@ -939,8 +940,8 @@ export class DashboardComponent implements OnInit {
         this.conversations_time = this.conversation_time;
 
         // chart
-        if (this.data_chart !== data['data'].detail) {
-          this.data_chart = data['data'].detail;
+        if (this.data_chart !== data["data"].detail) {
+          this.data_chart = data["data"].detail;
           this.globalService.setChartData(JSON.stringify(this.data_chart));
         }
       }
@@ -948,15 +949,15 @@ export class DashboardComponent implements OnInit {
   }
 
   fetchAbandonLists() {
-    let url_api_abandonlist = '';
-    if (this.url_mode == 'mapper') {
+    let url_api_abandonlist = "";
+    if (this.url_mode == "mapper") {
       url_api_abandonlist = this.url_mapper.api_abandonlist;
     } else {
-      url_api_abandonlist = environment.environment.url_backend + '/sse/v1/' + this.branch_id + '/abandon';
+      url_api_abandonlist = environment.environment.url_backend + "/sse/v1/" + this.branch_id + "/abandon";
     }
-    this._d1669Service.getAbandonLists(url_api_abandonlist + '/' + this.setting.chart_format).subscribe((data: any) => {
-      if (data['data']) {
-        this.abandon_lists = data['data'];
+    this._d1669Service.getAbandonLists(url_api_abandonlist + "/" + this.setting.chart_format).subscribe((data: any) => {
+      if (data["data"]) {
+        this.abandon_lists = data["data"];
         this.abandon_lists = this.sortAbandon(this.abandon_lists);
         this.abandon_lists = this.abandon_lists.slice(0, 8);
       } else {
@@ -966,7 +967,7 @@ export class DashboardComponent implements OnInit {
   }
 
   sortAbandon(abandon_lists: any) {
-    if (localStorage.getItem('abandon_lists_sorting_format') == 'count') {
+    if (localStorage.getItem("abandon_lists_sorting_format") == "count") {
       abandon_lists = abandon_lists.sort(this.sortAbandonByCount);
     } else {
       abandon_lists = abandon_lists.sort(this.sortAbandonByTime);
@@ -1002,15 +1003,15 @@ export class DashboardComponent implements OnInit {
     let tmp_hours, tmp_minutes, tmp_seconds;
 
     if (hours < 10) {
-      tmp_hours = '0' + hours;
+      tmp_hours = "0" + hours;
     } else tmp_hours = hours;
     if (minutes < 10) {
-      tmp_minutes = '0' + minutes;
+      tmp_minutes = "0" + minutes;
     } else tmp_minutes = minutes;
     if (seconds < 10) {
-      tmp_seconds = '0' + seconds;
+      tmp_seconds = "0" + seconds;
     } else tmp_seconds = seconds;
-    return tmp_hours + ':' + tmp_minutes + ':' + tmp_seconds;
+    return tmp_hours + ":" + tmp_minutes + ":" + tmp_seconds;
   }
 
   display_realtime_date() {
@@ -1025,62 +1026,62 @@ export class DashboardComponent implements OnInit {
     timer(delay, 1000).subscribe((x) => {
       // console.log(this.display_calltime_call_taker)
       for (let i = 0; i < this.agents_call_taker.length; i++) {
-        this.setDisplayCallTime(this.agents_call_taker[i], i, 'CT');
+        this.setDisplayCallTime(this.agents_call_taker[i], i, "CT");
       }
       for (let i = 0; i < this.agents_non_emergency.length; i++) {
-        this.setDisplayCallTime(this.agents_non_emergency[i], i, 'NE');
+        this.setDisplayCallTime(this.agents_non_emergency[i], i, "NE");
       }
       for (let i = 0; i < this.agents_coordinator.length; i++) {
-        this.setDisplayCallTime(this.agents_coordinator[i], i, 'CO');
+        this.setDisplayCallTime(this.agents_coordinator[i], i, "CO");
       }
       for (let i = 0; i < this.agents_dispatcher.length; i++) {
-        this.setDisplayCallTime(this.agents_dispatcher[i], i, 'DP');
+        this.setDisplayCallTime(this.agents_dispatcher[i], i, "DP");
       }
       for (let i = 0; i < this.agents_supervisor.length; i++) {
-        this.setDisplayCallTime(this.agents_supervisor[i], i, 'SU');
+        this.setDisplayCallTime(this.agents_supervisor[i], i, "SU");
       }
       for (let i = 0; i < this.agents_backup.length; i++) {
-        this.setDisplayCallTime(this.agents_backup[i], i, 'Backup');
+        this.setDisplayCallTime(this.agents_backup[i], i, "Backup");
       }
     });
   }
 
   setDisplayCallTime(agent: any, index: any, calltime_type: any) {
     if (
-      agent.action === 'ANSWER' ||
-      agent.action === 'RINGING' ||
-      agent.action === 'TRANSFER' ||
-      agent.action === 'LOST_TRANSFER' ||
-      (agent.action && agent.action.includes('CONFERENCE')) ||
-      agent.action === 'TRANSFER_JOIN_CALLING'
+      agent.action === "ANSWER" ||
+      agent.action === "RINGING" ||
+      agent.action === "TRANSFER" ||
+      agent.action === "LOST_TRANSFER" ||
+      (agent.action && agent.action.includes("CONFERENCE")) ||
+      agent.action === "TRANSFER_JOIN_CALLING"
     ) {
       if (agent.action_at === 0) {
-        if (calltime_type === 'CT') this.display_calltime_call_taker[index] = '';
-        if (calltime_type === 'NE') this.display_calltime_non_emergency[index] = '';
-        if (calltime_type === 'CO') this.display_calltime_coordinator[index] = '';
-        if (calltime_type === 'DP') this.display_calltime_dispatcher[index] = '';
-        if (calltime_type === 'SU') this.display_calltime_supervisor[index] = '';
-        if (calltime_type === 'Backup') this.display_calltime_backup[index] = '';
+        if (calltime_type === "CT") this.display_calltime_call_taker[index] = "";
+        if (calltime_type === "NE") this.display_calltime_non_emergency[index] = "";
+        if (calltime_type === "CO") this.display_calltime_coordinator[index] = "";
+        if (calltime_type === "DP") this.display_calltime_dispatcher[index] = "";
+        if (calltime_type === "SU") this.display_calltime_supervisor[index] = "";
+        if (calltime_type === "Backup") this.display_calltime_backup[index] = "";
       } else {
         const counter = new Date(0, 0, 0, 0, 0, 0);
         const start_time = agent.action_at;
         let talk_time = Math.floor(Date.now() / 1000 - start_time);
         if (talk_time < 0) talk_time = 0;
         counter.setSeconds(talk_time);
-        if (calltime_type == 'CT') this.display_calltime_call_taker[index] = counter;
-        if (calltime_type == 'NE') this.display_calltime_non_emergency[index] = counter;
-        if (calltime_type == 'CO') this.display_calltime_coordinator[index] = counter;
-        if (calltime_type == 'DP') this.display_calltime_dispatcher[index] = counter;
-        if (calltime_type == 'SU') this.display_calltime_supervisor[index] = counter;
-        if (calltime_type == 'Backup') this.display_calltime_backup[index] = counter;
+        if (calltime_type == "CT") this.display_calltime_call_taker[index] = counter;
+        if (calltime_type == "NE") this.display_calltime_non_emergency[index] = counter;
+        if (calltime_type == "CO") this.display_calltime_coordinator[index] = counter;
+        if (calltime_type == "DP") this.display_calltime_dispatcher[index] = counter;
+        if (calltime_type == "SU") this.display_calltime_supervisor[index] = counter;
+        if (calltime_type == "Backup") this.display_calltime_backup[index] = counter;
       }
     } else {
-      if (calltime_type === 'CT') this.display_calltime_call_taker[index] = '';
-      if (calltime_type === 'NE') this.display_calltime_non_emergency[index] = '';
-      if (calltime_type === 'CO') this.display_calltime_coordinator[index] = '';
-      if (calltime_type === 'DP') this.display_calltime_dispatcher[index] = '';
-      if (calltime_type === 'SU') this.display_calltime_supervisor[index] = '';
-      if (calltime_type === 'Backup') this.display_calltime_backup[index] = '';
+      if (calltime_type === "CT") this.display_calltime_call_taker[index] = "";
+      if (calltime_type === "NE") this.display_calltime_non_emergency[index] = "";
+      if (calltime_type === "CO") this.display_calltime_coordinator[index] = "";
+      if (calltime_type === "DP") this.display_calltime_dispatcher[index] = "";
+      if (calltime_type === "SU") this.display_calltime_supervisor[index] = "";
+      if (calltime_type === "Backup") this.display_calltime_backup[index] = "";
     }
   }
 
@@ -1093,35 +1094,35 @@ export class DashboardComponent implements OnInit {
     } else {
       return;
     }
-    if (environment.environment.env_mode != 'production') console.log(action);
-    if (action == 'RINGING') {
+    if (environment.environment.env_mode != "production") console.log(action);
+    if (action == "RINGING") {
       // update summary
       this.conversations_amount.map((x: any) => {
-        if (x.id == 'incoming') {
+        if (x.id == "incoming") {
           return x.value++;
         }
         return;
       });
       // update chart
-      this.data_chart['incoming'][this.data_chart['incoming'].length - 1]++;
+      this.data_chart["incoming"][this.data_chart["incoming"].length - 1]++;
       this.globalService.setChartData(JSON.stringify(this.data_chart));
     }
-    if (action == 'ANSWER') {
+    if (action == "ANSWER") {
       // update summary
       this.conversations_amount.map((x: any) => {
-        if (x.id == 'answer') {
+        if (x.id == "answer") {
           return x.value++;
         }
         return;
       });
       // update chart
-      this.data_chart['answer'][this.data_chart['answer'].length - 1]++;
+      this.data_chart["answer"][this.data_chart["answer"].length - 1]++;
       this.globalService.setChartData(JSON.stringify(this.data_chart));
     }
-    if (action == 'ABANDON' || action == 'QUEUE_FULL_ABANDON' || action == 'QUEUE_FULL_ANOTHER_ABANDON') {
+    if (action == "ABANDON" || action == "QUEUE_FULL_ABANDON" || action == "QUEUE_FULL_ANOTHER_ABANDON") {
       // update summary
       this.conversations_amount.map((x: any) => {
-        if (x.id == 'abandon') {
+        if (x.id == "abandon") {
           return x.value++;
         }
         return;
@@ -1148,13 +1149,13 @@ export class DashboardComponent implements OnInit {
       this.abandon_lists = this.sortAbandon(this.abandon_lists);
 
       // update chart
-      this.data_chart['abandon'][this.data_chart['abandon'].length - 1]++;
+      this.data_chart["abandon"][this.data_chart["abandon"].length - 1]++;
       this.globalService.setChartData(JSON.stringify(this.data_chart));
-      if (environment.environment.env_mode != 'production') console.log('summary updated');
+      if (environment.environment.env_mode != "production") console.log("summary updated");
     }
   }
 
-  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+  @HostListener("document:keydown.escape", ["$event"]) onKeydownHandler(event: KeyboardEvent) {
     this.is_fullscreen = false;
   }
 
@@ -1167,7 +1168,7 @@ export class DashboardComponent implements OnInit {
       position: this.toastr_position,
       preventDuplicates: this.toastr_preventDuplicates,
     };
-    const titleContent = title ? `${title}` : '';
+    const titleContent = title ? `${title}` : "";
     this.toastrService.show(body, `${titleContent}`, config);
   }
 
@@ -1182,20 +1183,20 @@ export class DashboardComponent implements OnInit {
       extendedTimeOut: 0,
       tapToDismiss: false,
     };
-    const titleContent = title ? `${title}` : '';
-    if (special_line == 'TTRS') {
+    const titleContent = title ? `${title}` : "";
+    if (special_line == "TTRS") {
       this.special_line_ttrs = this.toastrService.show(body, `${titleContent}`, config);
     }
-    if (special_line == '191') {
+    if (special_line == "191") {
       this.special_line_191 = this.toastrService.show(body, `${titleContent}`, config);
     }
-    if (special_line == 'Cellular') {
+    if (special_line == "Cellular") {
       this.special_line_cellular = this.toastrService.show(body, `${titleContent}`, config);
     }
-    if (special_line == 'Data') {
+    if (special_line == "Data") {
       this.special_line_data = this.toastrService.show(body, `${titleContent}`, config);
     }
-    if (special_line == 'Operator') {
+    if (special_line == "Operator") {
       this.special_line_operator = this.toastrService.show(body, `${titleContent}`, config);
     }
   }

@@ -1,10 +1,11 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { NbColorHelper, NbThemeService } from '@nebular/theme';
-import { GlobalService } from '../../services/global.service';
-import { Subscription } from 'rxjs';
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { NbColorHelper, NbThemeService } from "@nebular/theme";
+import { GlobalService } from "../../services/global.service";
+import { Subscription } from "rxjs";
+import { options } from "ionicons/icons";
 
 @Component({
-  selector: 'app-dashboard-chart',
+  selector: "app-dashboard-chart",
   template: ` <chart type="line" [data]="data" [options]="options">data_chart</chart> `,
 })
 export class DashboardChartComponent implements OnInit, OnDestroy {
@@ -21,35 +22,37 @@ export class DashboardChartComponent implements OnInit, OnDestroy {
   constructor(private theme: NbThemeService, private globalService: GlobalService) {}
 
   ngOnInit() {
+    console.log("init get chart data");
     this.chartSubscription = this.globalService.getChartData().subscribe((data) => {
-      console.log('ChartData', data);
-      // this.data_chart = JSON.parse(data);
-      // if (this.data_chart) {
-      //   this.data_chart.labels = this.data_chart.labels.map((x: any) => {
-      //     const date = new Date(x * 1000);
-      //     const hours = date.getHours();
-      //     const minutes = '0' + date.getMinutes();
-      //     return hours + ':' + minutes.substr(-2);
-      //   });
-      //   this.initChart();
-      // }
+      console.log("ChartData", data);
+      this.data_chart = JSON.parse(data);
+      if (this.data_chart) {
+        this.data_chart.labels = this.data_chart.labels.map((x: any) => {
+          const date = new Date(x * 1000);
+          const hours = date.getHours();
+          const minutes = "0" + date.getMinutes();
+          return hours + ":" + minutes.substr(-2);
+        });
+        this.initChart();
+      }
     });
   }
 
   initChart() {
-    if (localStorage.getItem('chart_format') === null) {
-      localStorage.setItem('chart_format', '24hr');
+    if (localStorage.getItem("chart_format") === null) {
+      localStorage.setItem("chart_format", "24hr");
     }
-    if (localStorage.getItem('incoming_label') === null) {
-      localStorage.setItem('incoming_label', 'show');
+    if (localStorage.getItem("incoming_label") === null) {
+      localStorage.setItem("incoming_label", "show");
     }
-    if (localStorage.getItem('answered_label') === null) {
-      localStorage.setItem('answered_label', 'show');
+    if (localStorage.getItem("answered_label") === null) {
+      localStorage.setItem("answered_label", "show");
     }
-    if (localStorage.getItem('abandoned_label') === null) {
-      localStorage.setItem('abandoned_label', 'show');
+    if (localStorage.getItem("abandoned_label") === null) {
+      localStorage.setItem("abandoned_label", "show");
     }
     this.themeSubscription = this.theme.getJsTheme().subscribe((config: any) => {
+      console.log(config.variables);
       const colors: any = config.variables;
       const chartjs: any = config.variables.chartjs;
 
@@ -58,35 +61,35 @@ export class DashboardChartComponent implements OnInit, OnDestroy {
         datasets: [
           {
             data: this.data_chart.incoming,
-            label: 'Incoming',
+            label: "Incoming",
             backgroundColor: NbColorHelper.hexToRgbA(colors.primary, 0.3),
             borderColor: colors.primary,
             fill: false,
-            hidden: localStorage.getItem('incoming_label') != 'show',
+            hidden: localStorage.getItem("incoming_label") != "show",
           },
           {
             data: this.data_chart.answer,
-            label: 'Answered',
+            label: "Answered",
             backgroundColor: NbColorHelper.hexToRgbA(colors.success, 0.3),
             borderColor: colors.success,
             fill: false,
-            hidden: localStorage.getItem('answered_label') != 'show',
+            hidden: localStorage.getItem("answered_label") != "show",
           },
           {
             data: this.data_chart.abandon,
-            label: 'Abandoned',
+            label: "Abandoned",
             backgroundColor: NbColorHelper.hexToRgbA(colors.danger, 0.3),
             borderColor: colors.danger,
             fill: false,
-            hidden: localStorage.getItem('abandoned_label') != 'show',
+            hidden: localStorage.getItem("abandoned_label") != "show",
           },
         ],
       };
 
+      console.log("init options");
       this.options = {
         responsive: true,
         maintainAspectRatio: false,
-        // onClick: (clickEvt, activeElems) => this.onChartClick(clickEvt, activeElems),
         animation: {
           duration: 0,
         },
@@ -95,10 +98,8 @@ export class DashboardChartComponent implements OnInit, OnDestroy {
             {
               gridLines: {
                 display: true,
-                color: chartjs.axisLineColor,
               },
               ticks: {
-                fontColor: chartjs.textColor,
                 stepSize: 1,
                 min: 0,
               },
@@ -108,10 +109,8 @@ export class DashboardChartComponent implements OnInit, OnDestroy {
             {
               gridLines: {
                 display: true,
-                color: chartjs.axisLineColor,
               },
               ticks: {
-                fontColor: chartjs.textColor,
                 stepSize: 1,
                 min: 0,
               },
@@ -125,12 +124,10 @@ export class DashboardChartComponent implements OnInit, OnDestroy {
           },
         },
         legend: {
-          labels: {
-            fontColor: chartjs.textColor,
-          },
-          onClick: (e: any) => e.stopPropagation(),
+          labels: {},
         },
       };
+      console.log("init options", options);
     });
   }
 
