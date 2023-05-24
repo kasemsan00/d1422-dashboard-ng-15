@@ -29,15 +29,15 @@
           <nb-card class="box-line-chart">
             <nb-card-header
               >Calls Monitor
-              <span class="right-box">
-                <button nbButton size="tiny" (click)="toggleSetting()">
-                  <nb-icon icon="settings-2" pack="eva"></nb-icon>
-                </button>
-                <button nbButton>Active</button>
-              </span>
+              <!--              <span class="right-box">-->
+              <!--                <button nbButton size="tiny" (click)="toggleSetting()">-->
+              <!--                  <nb-icon icon="settings-2" pack="eva"></nb-icon>-->
+              <!--                </button>-->
+              <!--                <button nbButton>Active</button>-->
+              <!--              </span>-->
             </nb-card-header>
             <nb-card-body>
-              <!--        <ngx-dashboard-chart [trigger]="data_chart"></ngx-dashboard-chart>-->
+              <app-dashboard-chart [trigger]="data_chart"></app-dashboard-chart>
             </nb-card-body>
           </nb-card>
         </div>

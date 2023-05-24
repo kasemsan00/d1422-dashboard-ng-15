@@ -22,9 +22,11 @@ import { AbandonListModule } from '../../components/abandon-list/abandon-list.mo
 import { CoreModule } from '../auth/services/core.module';
 import { HeaderComponent } from '../../components/header/header.component';
 import { NgOptimizedImage } from '@angular/common';
+import { DashboardChartComponent } from '../../components/dashboard-chart/dashboard-chart.component';
+import { ChartModule } from 'angular2-chartjs';
 
 @NgModule({
-  declarations: [DashboardComponent, HeaderComponent],
+  declarations: [DashboardComponent, HeaderComponent, DashboardChartComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -44,6 +46,7 @@ import { NgOptimizedImage } from '@angular/common';
     NbUserModule,
     NbContextMenuModule,
     NgOptimizedImage,
+    ChartModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   providers: [],
