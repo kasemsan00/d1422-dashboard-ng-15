@@ -1,20 +1,18 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, interval } from 'rxjs';
-import { NbMediaBreakpointsService, NbMenuService, NbThemeService } from '@nebular/theme';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { BehaviorSubject, interval } from "rxjs";
+import { NbMediaBreakpointsService, NbMenuService, NbThemeService } from "@nebular/theme";
 
-// import { UserData } from '../../@core/data/users';
-// import { LayoutService } from '../../@core/utils';
-import { map, takeUntil } from 'rxjs/operators';
-import { Subject, timer } from 'rxjs';
-import { AuthService } from '../../pages/auth';
-import screenfull from 'screenfull';
-import { GlobalService } from '../../services/global.service';
-import { ActivatedRoute } from '@angular/router';
+import { map, takeUntil } from "rxjs/operators";
+import { Subject, timer } from "rxjs";
+import { AuthService } from "../../pages/auth";
+import screenfull from "screenfull";
+import { GlobalService } from "../../services/global.service";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
-  selector: 'app-dashboard-header',
-  styleUrls: ['./header.component.css'],
-  templateUrl: './header.component.html',
+  selector: "app-dashboard-header",
+  styleUrls: ["./header.component.css"],
+  templateUrl: "./header.component.html",
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
@@ -28,36 +26,36 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   themes = [
     {
-      value: 'default',
-      name: 'Light',
+      value: "default",
+      name: "Light",
     },
     {
-      value: 'dark',
-      name: 'Dark',
+      value: "dark",
+      name: "Dark",
     },
     {
-      value: 'cosmic',
-      name: 'Cosmic',
+      value: "cosmic",
+      name: "Cosmic",
     },
     {
-      value: 'corporate',
-      name: 'Corporate',
+      value: "corporate",
+      name: "Corporate",
     },
   ];
 
-  currentTheme = 'default';
+  currentTheme = "default";
 
-  userMenu = [{ title: 'Log out' }];
+  userMenu = [{ title: "Log out" }];
 
-  dashboard_datetime: any = ''; // '22 February 2020 | 16:33:45'
+  dashboard_datetime: any = ""; // '22 February 2020 | 16:33:45'
 
-  url_mode: any = 'mapper'; // url_mapper, url_fixed
-  branch_id: any = '';
-  branch_name: any = '';
+  url_mode: any = "mapper"; // url_mapper, url_fixed
+  branch_id: any = "";
+  branch_name: any = "";
 
   constructor(
+    private menuService: NbMenuService,
     private themeService: NbThemeService,
-    // private userService: UserData,
     // private layoutService: LayoutService,
     private breakpointService: NbMediaBreakpointsService,
     private auth: AuthService,
@@ -66,6 +64,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.user = this.auth.identityClaims;
     this.display_realtime_date();
     this.checkLastUpdateTime();
     this.chkNotification();
@@ -75,14 +74,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.globalService.last_update_value.subscribe((data) => (this.last_update = data));
     this.globalService.agent_data_value.subscribe((data) => (this.agent_data = data));
-
-    // this.userService
-    //   .getUsers()
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe((users: any) => (this.user = users.nick));
-
     this.user = this.auth.identityClaims;
-
+    this.menuService.onItemClick().subscribe((event) => {
+      this.onItemSelection(event.item.title);
+    });
     const { xl } = this.breakpointService.getBreakpointsMap();
     this.themeService
       .onMediaQueryChange()
@@ -120,11 +115,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onItemSelection(title: string) {
-    if (title === 'Log out') {
+    if (title === "Log out") {
       // Do something on Log out
-      console.log('Log out Clicked ');
+      console.log("Log out Clicked ");
       this.auth.logout();
-    } else if (title === 'Profile') {
+    } else if (title === "Profile") {
       // Do something on Profile
     }
   }
@@ -148,7 +143,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   checkLastUpdateTime() {
     this.globalService.duration_sync_value.subscribe((nextValue) => {
       let now = Date.now();
-      console.log('updated', now);
+      console.log("updated", now);
       this.last_update = now;
     });
   }

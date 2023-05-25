@@ -1,16 +1,7 @@
-import { Component, HostListener, OnInit } from "@angular/core";
-import {
-  NbIconLibraries,
-  NbComponentStatus,
-  NbGlobalLogicalPosition,
-  NbGlobalPhysicalPosition,
-  NbGlobalPosition,
-  NbToastrService,
-  NbToastrConfig,
-} from "@nebular/theme";
-import { timer, defer } from "rxjs";
-import { D1669Service } from "../../services/d1669.service";
-import * as screenfull from "screenfull";
+import { Component, HostListener, OnDestroy, OnInit } from "@angular/core";
+import { NbIconLibraries, NbComponentStatus, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService, NbToastrConfig } from "@nebular/theme";
+import { timer } from "rxjs";
+import { DashboardService } from "../../services/dashboard.service";
 import { environment } from "../../../environments/environment";
 import { NbDialogService, NbToastRef } from "@nebular/theme";
 import { Router, ActivatedRoute } from "@angular/router";
@@ -23,7 +14,7 @@ import { AuthService } from "../auth";
   selector: "app-dashboard",
   templateUrl: "dashboard.component.html",
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   is_fullscreen: any = false;
 
   tmp_summary_id: any = [];
@@ -34,7 +25,7 @@ export class DashboardComponent implements OnInit {
   url_mapper: any;
   agent_lists: any;
 
-  dashboard_name: any = "Dashboard d1669 Bangkok";
+  dashboard_name: any = "Dashboard d1442";
   dashboard_datetime: any = ""; // '22 February 2020 | 16:33:45'
 
   duration_sync: any;
@@ -199,7 +190,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     iconsLibrary: NbIconLibraries,
-    private _d1669Service: D1669Service,
+    private _dashboardService: DashboardService,
     private auth: AuthService,
     private dialogService: NbDialogService,
     private toastrService: NbToastrService,
@@ -252,7 +243,7 @@ export class DashboardComponent implements OnInit {
   getBranchName(branch_id: string) {
     console.log("branch_id", branch_id);
     this.globalService.branch_name = "";
-    this._d1669Service.getBranch(environment.environment.url_backend + "/mapper-agent/v1/branchs?limit=100").subscribe((data: any) => {
+    this._dashboardService.getBranch(environment.environment.url_backend + "/mapper-agent/v1/branchs?limit=100").subscribe((data: any) => {
       if (data["status"] == "OK") {
         data["data"]["data"].map((item: any) => {
           if (item.branch_id == branch_id) {
@@ -326,7 +317,7 @@ export class DashboardComponent implements OnInit {
 
   fetchURLMapper() {
     this.initDashboard();
-    this._d1669Service
+    this._dashboardService
       .getMapper(
         environment.environment.url_mapper +
           "/" +
@@ -346,7 +337,7 @@ export class DashboardComponent implements OnInit {
           }
           this.getBranchName(this.branch_id);
           localStorage.setItem("url_mapper", JSON.stringify(this.url_mapper));
-          this._d1669Service.dedicatedWorker_post(url_api_sse);
+          this._dashboardService.dedicatedWorker_post(url_api_sse);
           // if (data["data"].branch_id == "") {
           //   if (this.user.roles.indexOf('admin') > -1) {
           //     this.showToast('warning', 'Admin function is coming soon.', '');
@@ -373,7 +364,7 @@ export class DashboardComponent implements OnInit {
     } else {
       url_api_status = environment.environment.url_backend + "/sse/v1/" + this.branch_id + "/status";
     }
-    this._d1669Service.getSIPStatus(url_api_status + "/" + this.setting.chart_format).subscribe((data: any) => {
+    this._dashboardService.getSIPStatus(url_api_status + "/" + this.setting.chart_format).subscribe((data: any) => {
       if (data["status"] == "OK") {
         this.globalService.sip_status = data["data"]["status"];
       } else {
@@ -393,8 +384,8 @@ export class DashboardComponent implements OnInit {
       url_api_agent = environment.environment.url_backend + "/user-manage/v1/" + this.branch_id + "/users";
     }
     this.subscriptions_forkjoin = forkJoin({
-      // agent_status: this._d1669Service.getAgentStatus(url_api_agent_status),
-      agent_lists: this._d1669Service.getAgentLists(url_api_agent),
+      // agent_status: this._dashboardService.getAgentStatus(url_api_agent_status),
+      agent_lists: this._dashboardService.getAgentLists(url_api_agent),
     }).subscribe(({ agent_status, agent_lists }: any) => {
       if (agent_lists["data"] && agent_lists["data"].length > 0) {
         this.agent_lists = agent_lists["data"];
@@ -919,7 +910,7 @@ export class DashboardComponent implements OnInit {
 
     console.log(url_api_summary);
     // เปลี่ยนทีหลัง
-    this._d1669Service.getConversationChart("https://cis-api-admin.dems1669.com/sse/v1/72/summary/24hr").subscribe((data: any) => {
+    this._dashboardService.getConversationChart("https://cis-api-admin.dems1669.com/sse/v1/72/summary/24hr").subscribe((data: any) => {
       if (data["status"] === "OK") {
         console.log("GetConversationChart", data);
         // summary
@@ -955,7 +946,7 @@ export class DashboardComponent implements OnInit {
     } else {
       url_api_abandonlist = environment.environment.url_backend + "/sse/v1/" + this.branch_id + "/abandon";
     }
-    this._d1669Service.getAbandonLists(url_api_abandonlist + "/" + this.setting.chart_format).subscribe((data: any) => {
+    this._dashboardService.getAbandonLists(url_api_abandonlist + "/" + this.setting.chart_format).subscribe((data: any) => {
       if (data["data"]) {
         this.abandon_lists = data["data"];
         this.abandon_lists = this.sortAbandon(this.abandon_lists);

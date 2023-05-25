@@ -1,18 +1,18 @@
-import { Injectable, NgZone } from '@angular/core';
-import { SseService } from './sse.service';
-import { HttpClient } from '@angular/common/http';
-import { interval } from 'rxjs';
-import { GlobalService } from './global.service';
+import { Injectable, NgZone } from "@angular/core";
+import { SseService } from "./sse.service";
+import { HttpClient } from "@angular/common/http";
+import { interval } from "rxjs";
+import { GlobalService } from "./global.service";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
-export class D1669Service {
+export class DashboardService {
   dedicatedWorker: Worker;
 
   constructor(private _zone: NgZone, private _sseService: SseService, private http: HttpClient, private globalService: GlobalService) {
-    this.dedicatedWorker = new Worker('../dedicated-worker.worker', {
-      type: 'module',
+    this.dedicatedWorker = new Worker("../dedicated-worker.worker", {
+      type: "module",
     });
 
     // @ts-ignore
