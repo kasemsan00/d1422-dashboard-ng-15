@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { BehaviorSubject, interval } from "rxjs";
 import { NbMediaBreakpointsService, NbMenuService, NbThemeService } from "@nebular/theme";
 
 import { map, takeUntil } from "rxjs/operators";
@@ -49,14 +48,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   dashboard_datetime: any = ""; // '22 February 2020 | 16:33:45'
 
-  url_mode: any = "mapper"; // url_mapper, url_fixed
   branch_id: any = "";
   branch_name: any = "";
 
   constructor(
     private menuService: NbMenuService,
     private themeService: NbThemeService,
-    // private layoutService: LayoutService,
     private breakpointService: NbMediaBreakpointsService,
     private auth: AuthService,
     private globalService: GlobalService,
